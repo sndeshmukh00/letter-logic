@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
-import { COLORS } from "./src/constants";
+import { CLEAR, COLORS, ENTER } from "./src/constants";
 import SafeViewAndroid from "./src/safeViewAndroid";
 import Keyboard from "./src/components/Keyboard";
 import { useState } from "react";
@@ -33,19 +33,64 @@ export default function App() {
 
   // handling/setting letters on key press
   const onKeyPressed = (key) => {
+    const updatedRows = cloneArray(rows);
+
     if (currentRow > rows.length - 1) {
       return;
     }
-    const updatedRows = cloneArray(rows);
-    updatedRows[currentRow][currentCell] = key;
-    setRows(updatedRows);
-    if (currentCell < letters.length - 1) {
+
+    if (key === CLEAR) {
+      const previousCell = currentCell - 1;
+      if (previousCell >= 0) {
+        updatedRows[currentRow][previousCell] = "";
+        setRows(updatedRows);
+        setCurrentCell(previousCell);
+      }
+      return;
+    }
+
+    if (key === ENTER) {
+      if (currentCell === rows[0].length) {
+        setCurrentRow(currentRow + 1);
+        setCurrentCell(0);
+      }
+      return;
+    }
+
+    if (currentCell < rows[0].length) {
+      updatedRows[currentRow][currentCell] = key;
+      setRows(updatedRows);
       setCurrentCell(currentCell + 1);
-    } else if (currentCell === letters.length - 1) {
-      setCurrentCell(0);
-      setCurrentRow(currentRow + 1);
     }
   };
+
+  // handling cell colors on moving to next row
+  const getCellBGColor = (row, cell) => {
+    const letter = rows[row][cell];
+    if (row >= currentRow) {
+      return COLORS.black;
+    }
+    if (letter === letters[cell]) {
+      return COLORS.primary;
+    }
+    if (letters.includes(letter)) {
+      return COLORS.secondary;
+    }
+    return COLORS.darkgrey;
+  };
+
+  // handling keyboard colors
+  const getLettersWithColors = (color) => {
+    return rows.flatMap((row, rowIndex) =>
+      row.filter(
+        (letter, cellIndex) => getCellBGColor(rowIndex, cellIndex) === color
+      )
+    );
+  };
+  const greenCaps = getLettersWithColors(COLORS.primary);
+  const yellowCaps = getLettersWithColors(COLORS.secondary);
+  const greyCaps = getLettersWithColors(COLORS.darkgrey);
+
   return (
     <SafeAreaView style={[SafeViewAndroid.AndroidSafeArea, styles.container]}>
       <StatusBar style="light" />
@@ -64,6 +109,7 @@ export default function App() {
                     borderColor: isCellActive(rowIndex, cellIndex)
                       ? COLORS.lightgrey
                       : COLORS.darkgrey,
+                    backgroundColor: getCellBGColor(rowIndex, cellIndex),
                   },
                 ]}
               >
@@ -74,7 +120,12 @@ export default function App() {
         ))}
       </ScrollView>
 
-      <Keyboard onKeyPressed={(key) => onKeyPressed(key)} />
+      <Keyboard
+        onKeyPressed={(key) => onKeyPressed(key)}
+        greenCaps={greenCaps}
+        yellowCaps={yellowCaps}
+        greyCaps={greyCaps}
+      />
     </SafeAreaView>
   );
 }
