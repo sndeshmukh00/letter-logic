@@ -1,14 +1,27 @@
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { CLEAR, COLORS, ENTER } from "./src/constants";
 import SafeViewAndroid from "./src/safeViewAndroid";
 import Keyboard from "./src/components/Keyboard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const word = "hello";
   const letters = word.split("");
   const complexity = 1; // 1 - easy, 2 - medium, 3 - hard
+  // For keeping track of current cell
+  const [currentRow, setCurrentRow] = useState(0);
+  const [currentCell, setCurrentCell] = useState(0);
+
+  // For handling Game Status
+  const [gameState, setGameState] = useState("playing"); //won, lost, playing
 
   // const rows = new Array(complexity).fill(null);
   const [rows, setRows] = useState(
@@ -16,9 +29,6 @@ export default function App() {
       new Array(letters.length).fill("")
     )
   );
-  // For keeping track of current cell
-  const [currentRow, setCurrentRow] = useState(0);
-  const [currentCell, setCurrentCell] = useState(0);
 
   // as useState array cant be modified directly we are cloning it
   const cloneArray = (arr) => {
@@ -28,6 +38,9 @@ export default function App() {
 
   // Checking for active cell
   const isCellActive = (row, cell) => {
+    // if (gameState !== "playing") {
+    //   return false;
+    // }
     return row === currentRow && cell === currentCell;
   };
 
@@ -91,6 +104,35 @@ export default function App() {
   const yellowCaps = getLettersWithColors(COLORS.secondary);
   const greyCaps = getLettersWithColors(COLORS.darkgrey);
 
+  // Handling game state
+  useEffect(() => {
+    if (currentRow > 0) {
+      getGameState();
+    }
+    // console.warn(greenCaps);
+  }, [currentRow]);
+
+  // game status checking
+  const getGameState = () => {
+    if (checkIfWon()) {
+      setGameState("won");
+      Alert.alert("Hey!", "You won!");
+    } else if (checkIfLost()) {
+      setGameState("lost");
+      Alert.alert("Hey!", "You lost!");
+    }
+  };
+
+  // Checking if game is won
+  const checkIfWon = () => {
+    return letters.join("") === rows[currentRow - 1].join("");
+  };
+
+  // Checking if game is lost
+  const checkIfLost = () => {
+    return currentRow >= rows.length;
+  };
+
   return (
     <SafeAreaView style={[SafeViewAndroid.AndroidSafeArea, styles.container]}>
       <StatusBar style="light" />
@@ -106,9 +148,11 @@ export default function App() {
                 style={[
                   styles.cell,
                   {
-                    borderColor: isCellActive(rowIndex, cellIndex)
-                      ? COLORS.lightgrey
-                      : COLORS.darkgrey,
+                    borderColor:
+                      gameState === "playing" &&
+                      isCellActive(rowIndex, cellIndex)
+                        ? COLORS.lightgrey
+                        : COLORS.darkgrey,
                     backgroundColor: getCellBGColor(rowIndex, cellIndex),
                   },
                 ]}
