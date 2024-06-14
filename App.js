@@ -7,10 +7,11 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { CLEAR, COLORS, ENTER } from "./src/constants";
+import { CLEAR, COLORS, ENTER, colorsToEmoji } from "./src/constants";
 import SafeViewAndroid from "./src/safeViewAndroid";
 import Keyboard from "./src/components/Keyboard";
 import { useEffect, useState } from "react";
+import GamePopup from "./src/components/Popups/GameStatePopup";
 
 export default function App() {
   const word = "hello";
@@ -22,6 +23,22 @@ export default function App() {
 
   // For handling Game Status
   const [gameState, setGameState] = useState("playing"); //won, lost, playing
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const handleHome = () => {
+    setPopupVisible(false);
+    // Navigate to Home
+  };
+
+  const handleRestart = () => {
+    setPopupVisible(false);
+    // Restart the game
+  };
+
+  const handleNext = () => {
+    setPopupVisible(false);
+    // Go to next level
+  };
 
   // const rows = new Array(complexity).fill(null);
   const [rows, setRows] = useState(
@@ -114,12 +131,14 @@ export default function App() {
 
   // game status checking
   const getGameState = () => {
-    if (checkIfWon()) {
+    if (checkIfWon() && gameState !== "won") {
       setGameState("won");
-      Alert.alert("Hey!", "You won!");
-    } else if (checkIfLost()) {
+      // Alert.alert("Hey!", "You won!");
+      setPopupVisible(true);
+    } else if (checkIfLost() && gameState !== "lost") {
       setGameState("lost");
-      Alert.alert("Hey!", "You lost!");
+      // Alert.alert("Hey!", "You lost!");
+      setPopupVisible(true);
     }
   };
 
@@ -130,12 +149,36 @@ export default function App() {
 
   // Checking if game is lost
   const checkIfLost = () => {
-    return currentRow >= rows.length;
+    return !checkIfWon() && currentRow >= rows.length;
+  };
+
+  // getting score message
+  const getScoreMessage = async () => {
+    const score = rows
+      .map((row, rowIndex) =>
+        row
+          .map(
+            (letter, cellIndex) =>
+              colorsToEmoji[getCellBGColor(rowIndex, cellIndex)]
+          )
+          .join("")
+      )
+      .filter((row) => row !== "")
+      .join("\n");
+    return `Letter Logic - 1 \n` + score;
   };
 
   return (
     <SafeAreaView style={[SafeViewAndroid.AndroidSafeArea, styles.container]}>
       <StatusBar style="light" />
+      <GamePopup
+        visible={popupVisible}
+        onHome={handleHome}
+        onRestart={handleRestart}
+        onNext={handleNext}
+        win={gameState === "won"}
+        getScore={getScoreMessage}
+      />
 
       <Text style={styles.title}>Letter Logic</Text>
 
