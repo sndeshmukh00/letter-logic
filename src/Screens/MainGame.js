@@ -5,12 +5,15 @@ import {
   ScrollView,
   Image,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 import { CLEAR, COLORS, ENTER, colorsToEmoji } from "../../src/constants";
 import Keyboard from "../../src/components/Keyboard";
 import { useEffect, useState } from "react";
 import GamePopup from "../../src/components/Popups/GameStatePopup";
 import safeViewAndroid from "../safeViewAndroid";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import PauseMenu from "../components/Popups/PauseMenuPopup";
 
 export default function MainGame() {
   const image = require("../../assets/homebg.jpg");
@@ -35,10 +38,10 @@ export default function MainGame() {
     // Navigate to Home
   };
 
-  const handleRestart = () => {
-    setPopupVisible(false);
-    // Restart the game
-  };
+  // const handleRestart = () => {
+  //   setPopupVisible(false);
+  //   // Restart the game
+  // };
 
   const handleNext = () => {
     setPopupVisible(false);
@@ -176,6 +179,41 @@ export default function MainGame() {
     return `Letter Logic - 1 \n` + score;
   };
 
+  // pause menu functions
+
+  const [musicOn, setMusicOn] = useState(true);
+  const [soundOn, setSoundOn] = useState(true);
+  const [vibrationOn, setVibrationOn] = useState(true);
+  const handlePause = () => {
+    setGameState("paused");
+  };
+
+  const handleClosePauseMenu = () => {
+    setGameState("playing");
+  };
+
+  const handleRestart = () => {
+    // Restart logic
+    setGameState("playing");
+  };
+
+  const handleQuit = () => {
+    // Quit logic
+    setGameState("closed");
+  };
+
+  const handleToggleMusic = () => {
+    setMusicOn(!musicOn);
+  };
+
+  const handleToggleSound = () => {
+    setSoundOn(!soundOn);
+  };
+
+  const handleToggleVibration = () => {
+    setVibrationOn(!vibrationOn);
+  };
+
   return (
     <SafeAreaView style={[safeViewAndroid.AndroidSafeArea, styles.container]}>
       <GamePopup
@@ -186,7 +224,34 @@ export default function MainGame() {
         win={gameState === "won"}
         getScore={getScoreMessage}
       />
-
+      {/* Pause button */}
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            gameState === "paused"
+              ? setGameState("playing")
+              : setGameState("paused");
+          }}
+        >
+          <MaterialIcons
+            name={gameState === "paused" ? "play-arrow" : "pause"}
+            size={32}
+            color="white"
+          />
+        </TouchableOpacity>
+      </View>
+      <PauseMenu
+        visible={gameState === "paused"}
+        onClose={handleClosePauseMenu}
+        onRestart={handleRestart}
+        onQuit={handleQuit}
+        onToggleMusic={handleToggleMusic}
+        onToggleSound={handleToggleSound}
+        onToggleVibration={handleToggleVibration}
+        musicOn={musicOn}
+        soundOn={soundOn}
+        vibrationOn={vibrationOn}
+      />
       <Image style={styles.logo} source={require("../../assets/logo.png")} />
 
       {isChampionship ? (
