@@ -7,7 +7,7 @@ import MainGame from "./src/Screens/MainGame";
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar translucent style="light" />
+      <StatusBar translucent style="light" hidden />
 
       {/* <Home /> */}
       <MainGame />
