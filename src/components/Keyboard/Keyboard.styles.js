@@ -10,6 +10,14 @@ export default StyleSheet.create({
     alignSelf: "stretch",
     marginTop: "auto",
   },
+  firstRow: {
+    // alignSelf: "stretch",
+    // width: "90%",
+    paddingHorizontal: "4%",
+    // flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   row: {
     alignSelf: "stretch",
     flexDirection: "row",
@@ -29,5 +37,19 @@ export default StyleSheet.create({
     fontSize: 16,
     color: COLORS.lightgrey,
     fontWeight: "bold",
+  },
+
+  rank: {
+    fontSize: 32,
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  madeBy: {
+    alignSelf: "center",
+    marginVertical: 10,
+    color: COLORS.lightgrey,
+    fontSize: 12,
+    fontWeight: "bold",
+    textTransform: "uppercase",
   },
 });

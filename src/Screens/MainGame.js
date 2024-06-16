@@ -25,7 +25,6 @@ export default function MainGame() {
   // For keeping track of current cell
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCell, setCurrentCell] = useState(0);
-  const [globalRank, setGlobalRank] = useState(1);
   const [lives, setLives] = useState(1);
   const [level, setLevel] = useState(1);
   const [isChampionship, setIsChampionship] = useState(false);
@@ -195,6 +194,14 @@ export default function MainGame() {
 
   const handleRestart = () => {
     // Restart logic
+    setPopupVisible(false);
+    setCurrentRow(0);
+    setCurrentCell(0);
+    setRows(
+      new Array(Math.ceil(letters.length / complexity)).fill(
+        new Array(letters.length).fill("")
+      )
+    );
     setGameState("playing");
   };
 
@@ -270,18 +277,11 @@ export default function MainGame() {
         soundOn={soundOn}
         vibrationOn={vibrationOn}
       />
-      <Image style={styles.logo} source={require("../../assets/logo.png")} />
 
-      {isChampionship ? (
-        <View style={styles.scoreContainer}>
-          <Text style={styles.rank}>🌎: {globalRank}</Text>
-          <Text style={styles.lives}>❤️: {lives}</Text>
-        </View>
-      ) : (
-        <View style={styles.scoreContainer}>
-          <Text style={styles.level}>Level: {level}</Text>
-        </View>
-      )}
+      <View style={styles.scoreContainer}>
+        <Image style={styles.logo} source={require("../../assets/logo.png")} />
+        <Text style={styles.level}>Level: {level}</Text>
+      </View>
 
       <ScrollView style={styles.board}>
         {rows.map((row, rowIndex) => (
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   board: {
     alignSelf: "stretch",
     height: 100,
-    marginVertical: 20,
+    marginVertical: 0,
   },
   row: {
     flexDirection: "row",
@@ -351,6 +351,16 @@ const styles = StyleSheet.create({
     maxWidth: 70,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
+    borderBottomWidth: 3,
+    shadowColor: COLORS.lightgrey,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 3,
   },
   cellText: {
     color: COLORS.lightgrey,
@@ -359,11 +369,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   logo: {
-    // backgroundColor: "red",
-    // flex: 1,
     top: "0%",
-    width: 200,
-    height: 50,
+    width: 150,
+    height: 40,
     alignSelf: "center",
     resizeMode: "contain",
   },
@@ -375,12 +383,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 10,
   },
-  rank: {
-    color: COLORS.lightgrey,
-    fontSize: 16,
-    fontWeight: "bold",
-    letterSpacing: 5,
-  },
   lives: {
     color: COLORS.lightgrey,
     fontSize: 16,
@@ -388,10 +390,11 @@ const styles = StyleSheet.create({
     letterSpacing: 5,
   },
   level: {
+    paddingTop: 6,
     color: COLORS.lightgrey,
     fontSize: 16,
     fontWeight: "bold",
-    letterSpacing: 5,
+    letterSpacing: 2,
   },
   topMenu: {
     flexDirection: "row",

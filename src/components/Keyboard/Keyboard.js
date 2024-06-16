@@ -1,6 +1,8 @@
 import { View, Text, Pressable } from "react-native";
 import { KEYS, ENTER, CLEAR, COLORS } from "../../constants";
 import styles, { keyWidth } from "./Keyboard.styles";
+import { useState } from "react";
+import { MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
 
 const Keyboard = ({
   onKeyPressed = () => {},
@@ -9,6 +11,8 @@ const Keyboard = ({
   greyCaps = [],
   enterEnabled = false,
 }) => {
+  const [globalRank, setGlobalRank] = useState(1);
+
   const isLongButton = (key) => {
     return key === CLEAR;
   };
@@ -28,7 +32,15 @@ const Keyboard = ({
 
   return (
     <View style={styles.keyboard}>
-      <View style={styles.row}>
+      <View style={styles.firstRow}>
+        {/* <Text style={styles.rank}>🌎</Text> */}
+        <FontAwesome6
+          style={styles.rank}
+          name={"ranking-star"}
+          size={36}
+          color="#a2ff00"
+        />
+
         <Pressable
           onPress={() => onKeyPressed(ENTER)}
           style={[
@@ -41,6 +53,12 @@ const Keyboard = ({
         >
           <Text style={styles.keyText}>SUBMIT</Text>
         </Pressable>
+        <MaterialCommunityIcons
+          style={styles.rank}
+          name={"lightbulb-on"}
+          size={36}
+          color="#ffcc00"
+        />
       </View>
       {KEYS.map((keyRow, i) => (
         <View style={styles.row} key={`row-${i}`}>
@@ -60,6 +78,9 @@ const Keyboard = ({
           ))}
         </View>
       ))}
+      <View>
+        <Text style={styles.madeBy}>Made with ❤️ in India.</Text>
+      </View>
     </View>
   );
 };
