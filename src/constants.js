@@ -13,11 +13,11 @@ export const colorsToEmoji = {
   [COLORS.secondary]: "🟧",
 };
 
-export const ENTER = "ENTER";
-export const CLEAR = "CLEAR";
+export const ENTER = "SUBMIT";
+export const CLEAR = "⌫";
 
 export const KEYS = [
   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
   ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-  [CLEAR, "z", "x", "c", "v", "b", "n", "m", ENTER],
+  ["z", "x", "c", "v", "b", "n", "m", CLEAR],
 ];

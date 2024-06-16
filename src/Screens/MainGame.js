@@ -14,13 +14,14 @@ import GamePopup from "../../src/components/Popups/GameStatePopup";
 import safeViewAndroid from "../safeViewAndroid";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import PauseMenu from "../components/Popups/PauseMenuPopup";
+import CoinCapsule from "../components/Capsule/CoinCapsule";
 
 export default function MainGame() {
   const image = require("../../assets/homebg.jpg");
 
   const word = "hello";
   const letters = word.split("");
-  const complexity = 1; // 1 - easy, 2 - medium, 3 - hard
+  const complexity = 0.9; // 1 - easy, 2 - medium, 3 - hard
   // For keeping track of current cell
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCell, setCurrentCell] = useState(0);
@@ -197,21 +198,36 @@ export default function MainGame() {
     setGameState("playing");
   };
 
+  const handleSave = () => {
+    // Save logic
+    // TODO: Implement save logic using custom hooks
+    // setGameState("saved");
+  };
+
   const handleQuit = () => {
     // Quit logic
     setGameState("closed");
   };
 
   const handleToggleMusic = () => {
+    // TODO: Implement music on/off toggle logic using custom hooks
     setMusicOn(!musicOn);
   };
 
   const handleToggleSound = () => {
+    // TODO: Implement sound on/off toggle logic using custom hooks
     setSoundOn(!soundOn);
   };
 
   const handleToggleVibration = () => {
+    // TODO: Implement vibration on/off toggle logic using custom hooks
     setVibrationOn(!vibrationOn);
+  };
+
+  const [coins, setCoins] = useState(100);
+
+  const handleAddCoins = () => {
+    setCoins(coins + 10);
   };
 
   return (
@@ -225,7 +241,7 @@ export default function MainGame() {
         getScore={getScoreMessage}
       />
       {/* Pause button */}
-      <View>
+      <View style={styles.topMenu}>
         <TouchableOpacity
           onPress={() => {
             gameState === "paused"
@@ -239,11 +255,13 @@ export default function MainGame() {
             color="white"
           />
         </TouchableOpacity>
+        <CoinCapsule coins={coins} onAddCoins={handleAddCoins} />
       </View>
       <PauseMenu
         visible={gameState === "paused"}
         onClose={handleClosePauseMenu}
         onRestart={handleRestart}
+        onSave={handleSave}
         onQuit={handleQuit}
         onToggleMusic={handleToggleMusic}
         onToggleSound={handleToggleSound}
@@ -295,6 +313,7 @@ export default function MainGame() {
         greenCaps={greenCaps}
         yellowCaps={yellowCaps}
         greyCaps={greyCaps}
+        enterEnabled={currentCell === rows[0].length}
       />
     </SafeAreaView>
   );
@@ -343,8 +362,8 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
     // flex: 1,
     top: "0%",
-    width: 300,
-    height: 100,
+    width: 200,
+    height: 50,
     alignSelf: "center",
     resizeMode: "contain",
   },
@@ -373,5 +392,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 5,
+  },
+  topMenu: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    alignSelf: "center",
   },
 });

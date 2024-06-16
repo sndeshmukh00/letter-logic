@@ -7,9 +7,10 @@ const Keyboard = ({
   greenCaps = [],
   yellowCaps = [],
   greyCaps = [],
+  enterEnabled = false,
 }) => {
   const isLongButton = (key) => {
-    return key === ENTER || key === CLEAR;
+    return key === CLEAR;
   };
 
   const getKeyBGColor = (key) => {
@@ -27,6 +28,20 @@ const Keyboard = ({
 
   return (
     <View style={styles.keyboard}>
+      <View style={styles.row}>
+        <Pressable
+          onPress={() => onKeyPressed(ENTER)}
+          style={[
+            styles.key,
+            { width: keyWidth * 2.5 },
+            {
+              backgroundColor: enterEnabled ? COLORS.primary : COLORS.darkgrey,
+            },
+          ]}
+        >
+          <Text style={styles.keyText}>SUBMIT</Text>
+        </Pressable>
+      </View>
       {KEYS.map((keyRow, i) => (
         <View style={styles.row} key={`row-${i}`}>
           {keyRow.map((key) => (

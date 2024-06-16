@@ -11,6 +11,7 @@ import {
 const PauseMenu = ({
   visible,
   onClose,
+  onSave,
   onRestart,
   onQuit,
   onToggleMusic,
@@ -30,6 +31,9 @@ const PauseMenu = ({
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onSave}>
+              <Text style={styles.buttonText}>Save Progress</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onRestart}>
               <Text style={styles.buttonText}>Restart</Text>
