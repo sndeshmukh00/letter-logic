@@ -15,8 +15,10 @@ import safeViewAndroid from "../safeViewAndroid";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import PauseMenu from "../components/Popups/PauseMenuPopup";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
+import usePersistGame, { usePersistedData } from "../hooks/usePersistGame";
 
 export default function MainGame() {
+  const [gameLoaded, setGameLoaded] = useState(false);
   const image = require("../../assets/homebg.jpg");
 
   const word = "hello";
@@ -38,16 +40,12 @@ export default function MainGame() {
     // Navigate to Home
   };
 
-  // const handleRestart = () => {
-  //   setPopupVisible(false);
-  //   // Restart the game
-  // };
-
   const handleNext = () => {
     setPopupVisible(false);
     // Go to next level
   };
 
+  // Defining Rows and cells with empty values
   // const rows = new Array(complexity).fill(null);
   const [rows, setRows] = useState(
     new Array(Math.ceil(letters.length / complexity)).fill(
@@ -137,7 +135,6 @@ export default function MainGame() {
     if (currentRow > 0) {
       getGameState();
     }
-    // console.warn(greenCaps);
   }, [currentRow]);
 
   // game status checking
@@ -180,7 +177,6 @@ export default function MainGame() {
   };
 
   // pause menu functions
-
   const [musicOn, setMusicOn] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
   const [vibrationOn, setVibrationOn] = useState(true);
@@ -192,6 +188,7 @@ export default function MainGame() {
     setGameState("playing");
   };
 
+  // Handling Restart
   const handleRestart = () => {
     // Restart logic
     setPopupVisible(false);
@@ -205,6 +202,7 @@ export default function MainGame() {
     setGameState("playing");
   };
 
+  // Handling Save to internet
   const handleSave = () => {
     // Save logic
     // TODO: Implement save logic using custom hooks
@@ -231,12 +229,37 @@ export default function MainGame() {
     setVibrationOn(!vibrationOn);
   };
 
+  // Coins Logic
   const [coins, setCoins] = useState(100);
 
   const handleAddCoins = () => {
     setCoins(coins + 10);
   };
 
+  // Persisting game state to LocalStorage
+  const persistGameState = () => {
+    usePersistGame(rows, currentRow, currentCell, gameState);
+  };
+
+  useEffect(() => {
+    // Saving game state to LocalStorage
+    if (gameLoaded) persistGameState();
+  }, [rows, currentRow, currentCell, gameState]);
+
+  // Reading game state from LocalStorage
+  useEffect(() => {
+    readState();
+  }, []);
+  const readState = async () => {
+    const data = await usePersistedData();
+    if (data) {
+      setGameState(data.gameState);
+      setRows(data.rows);
+      setCurrentCell(data.currentCell);
+      setCurrentRow(data.currentRow);
+    }
+    setGameLoaded(true);
+  };
   return (
     <SafeAreaView style={[safeViewAndroid.AndroidSafeArea, styles.container]}>
       <GamePopup
