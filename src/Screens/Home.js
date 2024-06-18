@@ -15,6 +15,7 @@ const Home = () => {
         </View>
       </ImageBackground>
       <StatusBar style="light" />
+      //TODO: Add play levelwise //TODO: Add play Daily challenges.
     </>
   );
 };
