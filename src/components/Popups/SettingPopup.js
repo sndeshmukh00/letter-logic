@@ -14,6 +14,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import ConfirmationPopup from "./ConfirmationPopup";
+import HowToPlayPopup from "./HowToPlayPopup";
 
 const SettingMenu = ({
   visible,
@@ -30,6 +31,7 @@ const SettingMenu = ({
     useState(false);
   const [isQuitConfirmationVisible, setIsQuitConfirmationVisible] =
     useState(false);
+  const [howToPlayVisible, setHowToPlayVisible] = useState(false);
 
   const onQuit = () => {
     BackHandler.exitApp();
@@ -62,6 +64,17 @@ const SettingMenu = ({
   const handleCancelQuit = () => {
     setIsQuitConfirmationVisible(false);
   };
+
+  // Handling How to Play popup here
+  const handleHowToPlay = () => {
+    setHowToPlayVisible(true);
+  };
+
+  const handleCloseHowToPlay = () => {
+    setHowToPlayVisible(false);
+    onClose();
+  };
+
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <TouchableWithoutFeedback onPress={onClose}>
@@ -129,13 +142,19 @@ const SettingMenu = ({
                     color="white"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleHowToPlay}>
                   <Ionicons
                     name="help-circle-outline"
                     size={32}
                     color="white"
                   />
                 </TouchableOpacity>
+                {howToPlayVisible && (
+                  <HowToPlayPopup
+                    visible={howToPlayVisible}
+                    onClose={handleCloseHowToPlay}
+                  />
+                )}
               </View>
             </View>
           </TouchableWithoutFeedback>
