@@ -14,6 +14,7 @@ import { StatusBar } from "expo-status-bar";
 import { COLORS } from "../constants";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
 import SettingMenu from "../components/Popups/SettingPopup";
+import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 
 const Home = () => {
   const image = require("../../assets/homebg.jpg");
@@ -23,6 +24,9 @@ const Home = () => {
   const [soundOn, setSoundOn] = useState(true);
   const [vibrationOn, setVibrationOn] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [howToPlayVisible, setHowToPlayVisible] = useState(false);
+
   // Coins Logic
   const [coins, setCoins] = useState(100);
 
@@ -68,6 +72,15 @@ const Home = () => {
     }
   };
 
+  // Handling How to Play popup here
+  const handleHowToPlay = () => {
+    setHowToPlayVisible(true);
+  };
+
+  const handleCloseHowToPlay = () => {
+    setHowToPlayVisible(false);
+  };
+
   return (
     <>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
@@ -80,6 +93,10 @@ const Home = () => {
           musicOn={musicOn}
           soundOn={soundOn}
           vibrationOn={vibrationOn}
+        />
+        <HowToPlayPopup
+          visible={howToPlayVisible}
+          onClose={handleCloseHowToPlay}
         />
         <View style={styles.mainContainer}>
           <View style={styles.coinMenu}>
@@ -146,7 +163,7 @@ const Home = () => {
 
               <TouchableOpacity
                 style={styles.icon}
-                onPress={() => navigation.navigate("HowToPlay")}
+                onPress={() => handleHowToPlay()}
               >
                 <Ionicons
                   name="help-circle"
