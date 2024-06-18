@@ -6,6 +6,7 @@ import {
   Image,
   Button,
   TouchableOpacity,
+  Share,
 } from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
@@ -45,6 +46,26 @@ const Home = () => {
   const handleToggleVibration = () => {
     // TODO: Implement vibration on/off toggle logic using custom hooks
     setVibrationOn(!vibrationOn);
+  };
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          "Hey! I just found this awesome game! 🎮 It has daily challenges, amazing levels, and tons of fun! Download it now and join me in the adventure! 📲",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -104,7 +125,7 @@ const Home = () => {
               <TouchableOpacity
                 style={styles.icon}
                 onPress={() => {
-                  /* Add share logic */
+                  handleShare();
                 }}
               >
                 <FontAwesome
