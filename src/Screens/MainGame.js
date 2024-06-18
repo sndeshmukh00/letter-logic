@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   Image,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import { CLEAR, COLORS, ENTER, colorsToEmoji } from "../../src/constants";
@@ -16,8 +15,11 @@ import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import PauseMenu from "../components/Popups/PauseMenuPopup";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
 import usePersistGame, { usePersistedData } from "../hooks/usePersistGame";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MainGame() {
+  console.log("Inside Main Game Component");
+
   const [gameLoaded, setGameLoaded] = useState(false);
   const image = require("../../assets/homebg.jpg");
 

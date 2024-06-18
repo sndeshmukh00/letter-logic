@@ -1,27 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet } from "react-native";
-import { COLORS } from "./src/constants";
-import Home from "./src/Screens/Home";
-import MainGame from "./src/Screens/MainGame";
-import DailyChallenges from "./src/Screens/DailyChallenges";
+import AppNavigator from "./src/Navigation/AppNavigator";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       <StatusBar translucent style="light" hidden />
-
-      {/* <Home /> */}
-      <DailyChallenges />
-      {/* <MainGame /> */}
-    </SafeAreaView>
+      <AppNavigator />
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.black,
-    alignItems: "center",
-    // justifyContent: "center",
-  },
-});
