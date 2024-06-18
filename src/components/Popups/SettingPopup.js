@@ -54,6 +54,8 @@ const SettingMenu = ({
     setIsQuitConfirmationVisible(true);
   };
   const handleConfirmQuit = () => {
+    setIsQuitConfirmationVisible(false);
+    onClose();
     onQuit();
   };
 
