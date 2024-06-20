@@ -16,7 +16,7 @@ import CoinCapsule from "../components/Capsule/CoinCapsule";
 import SettingMenu from "../components/Popups/SettingPopup";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const image = require("../../assets/homebg.jpg");
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
