@@ -16,9 +16,12 @@ import PauseMenu from "../components/Popups/PauseMenuPopup";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
 import usePersistGame, { usePersistedData } from "../hooks/usePersistGame";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ActivityLoader from "../components/Loader/ActivityLoader";
 
-export default function MainGame() {
-  console.log("Inside Main Game Component");
+export default function MainGame({ navigation, route }) {
+  const { date } = route.params;
+  const [isLoading, setIsLoading] = useState(true);
+  console.log("Inside Main Game Component", date);
 
   const [gameLoaded, setGameLoaded] = useState(false);
   const image = require("../../assets/homebg.jpg");
@@ -264,82 +267,88 @@ export default function MainGame() {
   };
   return (
     <SafeAreaView style={[safeViewAndroid.AndroidSafeArea, styles.container]}>
-      <GamePopup
-        visible={popupVisible}
-        onHome={handleHome}
-        onRestart={handleRestart}
-        onNext={handleNext}
-        win={gameState === "won"}
-        getScore={getScoreMessage}
-      />
-      {/* Pause button */}
-      <View style={styles.topMenu}>
-        <TouchableOpacity
-          onPress={() => {
-            gameState === "paused"
-              ? setGameState("playing")
-              : setGameState("paused");
-          }}
-        >
-          <MaterialIcons
-            name={gameState === "paused" ? "play-arrow" : "pause"}
-            size={32}
-            color="white"
+      {isLoading ? (
+        <ActivityLoader />
+      ) : (
+        <>
+          <GamePopup
+            visible={popupVisible}
+            onHome={handleHome}
+            onRestart={handleRestart}
+            onNext={handleNext}
+            win={gameState === "won"}
+            getScore={getScoreMessage}
           />
-        </TouchableOpacity>
-        <CoinCapsule coins={coins} onAddCoins={handleAddCoins} />
-      </View>
-      <PauseMenu
-        visible={gameState === "paused"}
-        onClose={handleClosePauseMenu}
-        onRestart={handleRestart}
-        onSave={handleSave}
-        onQuit={handleQuit}
-        onToggleMusic={handleToggleMusic}
-        onToggleSound={handleToggleSound}
-        onToggleVibration={handleToggleVibration}
-        musicOn={musicOn}
-        soundOn={soundOn}
-        vibrationOn={vibrationOn}
-      />
-
-      <View style={styles.scoreContainer}>
-        <Image style={styles.logo} source={require("../../assets/logo.png")} />
-        <Text style={styles.level}>Level: {level}</Text>
-      </View>
-
-      <ScrollView style={styles.board}>
-        {rows.map((row, rowIndex) => (
-          <View key={`row-${rowIndex}`} style={styles.row}>
-            {row.map((letter, cellIndex) => (
-              <View
-                key={`cell-${rowIndex}-${cellIndex}`}
-                style={[
-                  styles.cell,
-                  {
-                    borderColor:
-                      gameState === "playing" &&
-                      isCellActive(rowIndex, cellIndex)
-                        ? COLORS.lightgrey
-                        : COLORS.darkgrey,
-                    backgroundColor: getCellBGColor(rowIndex, cellIndex),
-                  },
-                ]}
-              >
-                <Text style={styles.cellText}>{letter.toUpperCase()}</Text>
+          ///* Pause button */
+          <View style={styles.topMenu}>
+            <TouchableOpacity
+              onPress={() => {
+                gameState === "paused"
+                  ? setGameState("playing")
+                  : setGameState("paused");
+              }}
+            >
+              <MaterialIcons
+                name={gameState === "paused" ? "play-arrow" : "pause"}
+                size={32}
+                color="white"
+              />
+            </TouchableOpacity>
+            <CoinCapsule coins={coins} onAddCoins={handleAddCoins} />
+          </View>
+          <PauseMenu
+            visible={gameState === "paused"}
+            onClose={handleClosePauseMenu}
+            onRestart={handleRestart}
+            onSave={handleSave}
+            onQuit={handleQuit}
+            onToggleMusic={handleToggleMusic}
+            onToggleSound={handleToggleSound}
+            onToggleVibration={handleToggleVibration}
+            musicOn={musicOn}
+            soundOn={soundOn}
+            vibrationOn={vibrationOn}
+          />
+          <View style={styles.scoreContainer}>
+            <Image
+              style={styles.logo}
+              source={require("../../assets/logo.png")}
+            />
+            <Text style={styles.level}>Level: {level}</Text>
+          </View>
+          <ScrollView style={styles.board}>
+            {rows.map((row, rowIndex) => (
+              <View key={`row-${rowIndex}`} style={styles.row}>
+                {row.map((letter, cellIndex) => (
+                  <View
+                    key={`cell-${rowIndex}-${cellIndex}`}
+                    style={[
+                      styles.cell,
+                      {
+                        borderColor:
+                          gameState === "playing" &&
+                          isCellActive(rowIndex, cellIndex)
+                            ? COLORS.lightgrey
+                            : COLORS.darkgrey,
+                        backgroundColor: getCellBGColor(rowIndex, cellIndex),
+                      },
+                    ]}
+                  >
+                    <Text style={styles.cellText}>{letter.toUpperCase()}</Text>
+                  </View>
+                ))}
               </View>
             ))}
-          </View>
-        ))}
-      </ScrollView>
-
-      <Keyboard
-        onKeyPressed={(key) => onKeyPressed(key)}
-        greenCaps={greenCaps}
-        yellowCaps={yellowCaps}
-        greyCaps={greyCaps}
-        enterEnabled={currentCell === rows[0].length}
-      />
+          </ScrollView>
+          <Keyboard
+            onKeyPressed={(key) => onKeyPressed(key)}
+            greenCaps={greenCaps}
+            yellowCaps={yellowCaps}
+            greyCaps={greyCaps}
+            enterEnabled={currentCell === rows[0].length}
+          />
+        </>
+      )}
     </SafeAreaView>
   );
 }
