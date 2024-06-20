@@ -21,3 +21,5 @@ export const KEYS = [
   ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
   ["z", "x", "c", "v", "b", "n", "m", CLEAR],
 ];
+
+export const API_URL = "https://letterlogic-api.vercel.app/api/";
