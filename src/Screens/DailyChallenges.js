@@ -8,14 +8,18 @@ import {
 } from "react-native";
 import moment from "moment";
 
-const DailyChallenges = ({ onSelectDay }) => {
+const DailyChallenges = ({ navigation }) => {
   const [currentDate, setCurrentDate] = useState(moment());
 
   const generateDaysInMonth = (date) => {
-    const startOfMonth = moment(date).startOf("month");
-    const endOfMonth = moment(date).endOf("month");
+    const startOfMonth = moment.utc(date).startOf("month");
+    const endOfMonth = moment.utc(date).endOf("month");
     const days = [];
-    for (let i = startOfMonth; i <= endOfMonth; i.add(1, "day")) {
+    for (
+      let i = startOfMonth.clone();
+      i.isSameOrBefore(endOfMonth);
+      i.add(1, "day")
+    ) {
       days.push(i.clone());
     }
     return days;
@@ -32,7 +36,13 @@ const DailyChallenges = ({ onSelectDay }) => {
   };
 
   const handleSelectDay = (day) => {
-    onSelectDay(day);
+    const formattedDate = formatDateString(day);
+
+    navigation.navigate("GameScreen", { date: formattedDate });
+  };
+
+  const formatDateString = (date) => {
+    return `day_${date.format("YYYYMMDD")}`;
   };
 
   return (
@@ -49,7 +59,8 @@ const DailyChallenges = ({ onSelectDay }) => {
       <FlatList
         data={daysInMonth}
         numColumns={5}
-        keyExtractor={(item) => item.format("YYYY-MM-DD")}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        keyExtractor={(item) => item.format("YYYYMMDD")}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.day}
@@ -85,7 +96,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   day: {
-    flex: 1,
+    width: "16%",
+    // flex: 1,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
