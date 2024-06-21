@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,10 +6,38 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import { gettDailyChallengeCompleted } from "../hooks/usePersistGame";
+import { COLORS } from "../constants";
 
 const DailyChallenges = ({ navigation }) => {
   const [currentDate, setCurrentDate] = useState(moment());
+  const [winningState, setWinningState] = useState([]);
+
+  useEffect(() => {
+    // const fetchWinningState = async () => {
+    //   try {
+    //     const storedWinningState = await AsyncStorage.getItem("winningState");
+    //     const parsedWinningState = storedWinningState
+    //       ? JSON.parse(storedWinningState)
+    //       : [];
+    //     setWinningState(parsedWinningState);
+    //   } catch (error) {
+    //     console.error("Failed to fetch winning state:", error);
+    //   }
+    // };
+    gettDailyChallengeCompleted().then((data) => {
+      try {
+        setWinningState(data);
+      } catch (error) {
+        console.error("Failed to set winning state:", error);
+      }
+      // setWinningState(data);
+    });
+
+    // fetchWinningState();
+  }, []);
 
   const generateDaysInMonth = (date) => {
     const startOfMonth = moment.utc(date).startOf("month");
@@ -37,12 +65,15 @@ const DailyChallenges = ({ navigation }) => {
 
   const handleSelectDay = (day) => {
     const formattedDate = formatDateString(day);
-
     navigation.navigate("GameScreen", { date: formattedDate });
   };
 
   const formatDateString = (date) => {
     return `day_${date.format("YYYYMMDD")}`;
+  };
+
+  const isDayWon = (date) => {
+    return winningState.includes(formatDateString(date));
   };
 
   return (
@@ -63,10 +94,12 @@ const DailyChallenges = ({ navigation }) => {
         keyExtractor={(item) => item.format("YYYYMMDD")}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.day}
+            style={[styles.day, isDayWon(item) && styles.wonDay]}
             onPress={() => handleSelectDay(item)}
           >
-            <Text style={styles.dayText}>{item.format("D")}</Text>
+            <Text style={[styles.dayText, isDayWon(item) && styles.wonDayText]}>
+              {item.format("D")}
+            </Text>
           </TouchableOpacity>
         )}
       />
@@ -97,7 +130,6 @@ const styles = StyleSheet.create({
   },
   day: {
     width: "16%",
-    // flex: 1,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -110,6 +142,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+  },
+  wonDay: {
+    backgroundColor: COLORS.primary,
+    color: COLORS.white,
+    shadowColor: COLORS.primary,
+  },
+  wonDayText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   dayText: {
     fontSize: 16,
