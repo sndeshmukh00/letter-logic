@@ -24,3 +24,47 @@ export const usePersistedData = async () => {
     })
     .catch((err) => console.log("Could not read data: ", err));
 };
+
+export const setDailyChallengeCompleted = async (date) => {
+  try {
+    // Read the current winning state from AsyncStorage
+    const storedWinningState = await AsyncStorage.getItem(
+      "dailyWordWinningState"
+    );
+
+    // Parse the retrieved state to an array
+    let winningState = storedWinningState ? JSON.parse(storedWinningState) : [];
+
+    // Check if the date already exists to avoid duplicates
+    if (!winningState.includes(date)) {
+      // Add the new date to the array
+      winningState.push(date);
+
+      // Save the updated array back to AsyncStorage
+      await AsyncStorage.setItem(
+        "dailyWordWinningState",
+        JSON.stringify(winningState)
+      );
+
+      console.log("Winning state updated:", winningState);
+    } else {
+      console.log("Date already exists in winning state:", date);
+    }
+  } catch (error) {
+    console.error("Failed to save winning state:", error);
+  }
+};
+
+export const gettDailyChallengeCompleted = async () => {
+  try {
+    const storedWinningState = await AsyncStorage.getItem(
+      "dailyWordWinningState"
+    );
+    let winningState = storedWinningState ? JSON.parse(storedWinningState) : [];
+    console.log("Current winning state:", winningState);
+    return winningState;
+  } catch (error) {
+    console.error("Failed to get winning state:", error);
+    return [];
+  }
+};
