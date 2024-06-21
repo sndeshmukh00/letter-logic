@@ -16,27 +16,13 @@ const DailyChallenges = ({ navigation }) => {
   const [winningState, setWinningState] = useState([]);
 
   useEffect(() => {
-    // const fetchWinningState = async () => {
-    //   try {
-    //     const storedWinningState = await AsyncStorage.getItem("winningState");
-    //     const parsedWinningState = storedWinningState
-    //       ? JSON.parse(storedWinningState)
-    //       : [];
-    //     setWinningState(parsedWinningState);
-    //   } catch (error) {
-    //     console.error("Failed to fetch winning state:", error);
-    //   }
-    // };
     gettDailyChallengeCompleted().then((data) => {
       try {
         setWinningState(data);
       } catch (error) {
         console.error("Failed to set winning state:", error);
       }
-      // setWinningState(data);
     });
-
-    // fetchWinningState();
   }, []);
 
   const generateDaysInMonth = (date) => {
