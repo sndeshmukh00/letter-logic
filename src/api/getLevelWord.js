@@ -2,8 +2,8 @@
 
 import { API_URL } from "../constants";
 
-export const getDailyWord = async (day) => {
-  const response = await fetch(API_URL + "words/daily?day=" + day);
+export const getLevelWord = async (level) => {
+  const response = await fetch(API_URL + "levels/public/words?level=" + level);
   const data = await response.json();
   //   console.log(data);
   return data;

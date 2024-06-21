@@ -17,23 +17,27 @@ import CoinCapsule from "../components/Capsule/CoinCapsule";
 import usePersistGame, { usePersistedData } from "../hooks/usePersistGame";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ActivityLoader from "../components/Loader/ActivityLoader";
+import { getDailyWord } from "../api/getDailyWord";
+import { getLevelWord } from "../api/getLevelWord";
 
 export default function MainGame({ navigation, route }) {
-  const { date } = route.params;
+  const { date, level } = route.params;
   const [isLoading, setIsLoading] = useState(true);
-  console.log("Inside Main Game Component", date);
+  // console.log("Inside Main Game Component", date);
 
   const [gameLoaded, setGameLoaded] = useState(false);
   const image = require("../../assets/homebg.jpg");
 
-  const word = "hello";
-  const letters = word.split("");
-  const complexity = 0.9; // 1 - easy, 2 - medium, 3 - hard
+  // const word = "hello";
+  const [word, setWord] = useState("Hello");
+  const [letters, setLetters] = useState([]);
+
+  const [complexity, setComplexity] = useState(0.9); // 1 - easy, 2 - medium, 3 - hard
   // For keeping track of current cell
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCell, setCurrentCell] = useState(0);
   const [lives, setLives] = useState(1);
-  const [level, setLevel] = useState(1);
+  // const [level, setLevel] = useState(1);
   const [isChampionship, setIsChampionship] = useState(false);
 
   // For handling Game Status
@@ -42,6 +46,7 @@ export default function MainGame({ navigation, route }) {
 
   const handleHome = () => {
     setPopupVisible(false);
+    navigation.navigate("Home");
     // Navigate to Home
   };
 
@@ -52,11 +57,8 @@ export default function MainGame({ navigation, route }) {
 
   // Defining Rows and cells with empty values
   // const rows = new Array(complexity).fill(null);
-  const [rows, setRows] = useState(
-    new Array(Math.ceil(letters.length / complexity)).fill(
-      new Array(letters.length).fill("")
-    )
-  );
+
+  const [rows, setRows] = useState([]);
 
   // as useState array cant be modified directly we are cloning it
   const cloneArray = (arr) => {
@@ -248,13 +250,44 @@ export default function MainGame({ navigation, route }) {
 
   useEffect(() => {
     // Saving game state to LocalStorage
-    if (gameLoaded) persistGameState();
+    // if (gameLoaded) persistGameState();
   }, [rows, currentRow, currentCell, gameState]);
+
+  const getWord = async () => {
+    if (date) {
+      const dailyWord = await getDailyWord(date);
+      console.log(dailyWord);
+      setWord(dailyWord.words);
+      setLetters(dailyWord.words.split(""));
+    } else if (level) {
+      const levelWord = await getLevelWord(level);
+      console.log(levelWord);
+      setWord(levelWord.words);
+      setLetters(levelWord.words.split(""));
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getWord();
+  }, []);
+
+  // Initializing rows after letters have been set
+  useEffect(() => {
+    if (letters.length > 0) {
+      setRows(
+        new Array(Math.ceil(letters.length / complexity)).fill(
+          new Array(letters.length).fill("")
+        )
+      );
+    }
+  }, [letters]);
 
   // Reading game state from LocalStorage
   useEffect(() => {
-    readState();
+    // if (!level) readState();
   }, []);
+
   const readState = async () => {
     const data = await usePersistedData();
     if (data) {
@@ -265,6 +298,7 @@ export default function MainGame({ navigation, route }) {
     }
     setGameLoaded(true);
   };
+
   return (
     <SafeAreaView style={[safeViewAndroid.AndroidSafeArea, styles.container]}>
       {isLoading ? (
@@ -279,7 +313,6 @@ export default function MainGame({ navigation, route }) {
             win={gameState === "won"}
             getScore={getScoreMessage}
           />
-          ///* Pause button */
           <View style={styles.topMenu}>
             <TouchableOpacity
               onPress={() => {
@@ -345,7 +378,7 @@ export default function MainGame({ navigation, route }) {
             greenCaps={greenCaps}
             yellowCaps={yellowCaps}
             greyCaps={greyCaps}
-            enterEnabled={currentCell === rows[0].length}
+            enterEnabled={currentCell === letters.length}
           />
         </>
       )}
