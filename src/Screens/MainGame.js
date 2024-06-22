@@ -14,7 +14,12 @@ import safeViewAndroid from "../safeViewAndroid";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import PauseMenu from "../components/Popups/PauseMenuPopup";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
-import usePersistGame, { usePersistedData } from "../hooks/usePersistGame";
+import usePersistGame, {
+  usePersistedData,
+  setDailyChallengeCompleted,
+  setLevelCompleted,
+  getLevelCompleted,
+} from "../hooks/usePersistGame";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ActivityLoader from "../components/Loader/ActivityLoader";
 import { getDailyWord } from "../api/getDailyWord";
@@ -22,6 +27,7 @@ import { getLevelWord } from "../api/getLevelWord";
 
 export default function MainGame({ navigation, route }) {
   const { date, level } = route.params;
+  const [levelToDisplay, setLevelToDisplay] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   // console.log("Inside Main Game Component", date);
 
@@ -50,9 +56,16 @@ export default function MainGame({ navigation, route }) {
     // Navigate to Home
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setPopupVisible(false);
-    // Go to next level
+    if (date) {
+      navigation.navigate("DailyChallenges", { date: date });
+    } else if (level) {
+      setIsLoading(true);
+      const localLevel = (await getLevelCompleted()) + 1;
+      setLevelCompleted(localLevel); // Update the completed level
+      getWord(localLevel); // Fetch the word for the new level
+    }
   };
 
   // Defining Rows and cells with empty values
@@ -148,6 +161,8 @@ export default function MainGame({ navigation, route }) {
   const getGameState = () => {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
+      // if (date) setDailyChallengeCompleted(date);
+      // else if (level) setLevelCompleted(level);
       // Alert.alert("Hey!", "You won!");
       setPopupVisible(true);
     } else if (checkIfLost() && gameState !== "lost") {
@@ -253,14 +268,19 @@ export default function MainGame({ navigation, route }) {
     // if (gameLoaded) persistGameState();
   }, [rows, currentRow, currentCell, gameState]);
 
-  const getWord = async () => {
+  const getWord = async (localLevel) => {
     if (date) {
       const dailyWord = await getDailyWord(date);
       console.log(dailyWord);
       setWord(dailyWord.words);
       setLetters(dailyWord.words.split(""));
-    } else if (level) {
-      const levelWord = await getLevelWord(level);
+    } else if (localLevel) {
+      const levelWord = await getLevelWord(localLevel);
+      if (!levelWord) {
+        // Implement error handling
+        // return;
+      }
+      setLevelToDisplay(localLevel);
       console.log(levelWord);
       setWord(levelWord.words);
       setLetters(levelWord.words.split(""));
@@ -269,7 +289,16 @@ export default function MainGame({ navigation, route }) {
   };
 
   useEffect(() => {
-    getWord();
+    const initializeGame = async () => {
+      if (level) {
+        getWord(level);
+      } else {
+        const localLevel = await getLevelCompleted();
+        getWord(localLevel);
+      }
+    };
+
+    initializeGame();
   }, []);
 
   // Initializing rows after letters have been set
@@ -280,6 +309,9 @@ export default function MainGame({ navigation, route }) {
           new Array(letters.length).fill("")
         )
       );
+      setCurrentRow(0);
+      setCurrentCell(0);
+      setGameState("playing");
     }
   }, [letters]);
 
@@ -347,7 +379,7 @@ export default function MainGame({ navigation, route }) {
               style={styles.logo}
               source={require("../../assets/logo.png")}
             />
-            <Text style={styles.level}>Level: {level}</Text>
+            <Text style={styles.level}>Level: {levelToDisplay}</Text>
           </View>
           <ScrollView style={styles.board}>
             {rows.map((row, rowIndex) => (

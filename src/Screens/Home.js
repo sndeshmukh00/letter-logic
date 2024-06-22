@@ -9,15 +9,18 @@ import {
   Share,
 } from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { COLORS } from "../constants";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
 import SettingMenu from "../components/Popups/SettingPopup";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
+import { getLevelCompleted } from "../hooks/usePersistGame";
 
 const Home = ({ navigation }) => {
   const image = require("../../assets/homebg.jpg");
+
+  const [level, setLevel] = useState(1);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [musicOn, setMusicOn] = useState(true);
@@ -81,6 +84,17 @@ const Home = ({ navigation }) => {
     setHowToPlayVisible(false);
   };
 
+  useEffect(() => {
+    getLevelCompleted().then((data) => {
+      try {
+        console.log(data);
+        setLevel(data);
+      } catch (error) {
+        console.error("Failed to set level:", error);
+      }
+    });
+  }, []);
+
   return (
     <>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
@@ -118,9 +132,11 @@ const Home = ({ navigation }) => {
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate("GameScreen", { level: 1 })}
+              onPress={() =>
+                navigation.navigate("GameScreen", { level: level })
+              }
             >
-              <Text style={styles.buttonText}>Continue Level 1</Text>
+              <Text style={styles.buttonText}>Continue Level {level}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity

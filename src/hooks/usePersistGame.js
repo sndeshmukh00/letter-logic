@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import saveLevel from "../api/saveLevel";
 
 export default usePersistGame = async (
   rows,
@@ -62,6 +63,49 @@ export const gettDailyChallengeCompleted = async () => {
     );
     let winningState = storedWinningState ? JSON.parse(storedWinningState) : [];
     console.log("Current winning state:", winningState);
+    return winningState;
+  } catch (error) {
+    console.error("Failed to get winning state:", error);
+    return [];
+  }
+};
+
+export const setLevelCompleted = async (level) => {
+  try {
+    const user = JSON.parse(await AsyncStorage.getItem("user"));
+    // Read the current winning state from AsyncStorage
+    const storedWinningState = await AsyncStorage.getItem("levelWinningState");
+
+    // Parse the retrieved state to an array
+    let winningState = level;
+
+    // Check if the date already exists to avoid duplicates
+    if (winningState !== storedWinningState) {
+      try {
+        // Save the updated array back to AsyncStorage
+        await AsyncStorage.setItem(
+          "levelWinningState",
+          JSON.stringify(winningState)
+        );
+        if (user) await saveLevel(winningState);
+
+        console.log("Level updated:", winningState);
+      } catch (error) {
+        console.error("Failed to save winning state:", error);
+      }
+    } else {
+      console.log("Level already cleared:", level);
+    }
+  } catch (error) {
+    console.error("Failed to save level state:", error);
+  }
+};
+
+export const getLevelCompleted = async () => {
+  try {
+    const storedWinningState = await AsyncStorage.getItem("levelWinningState");
+    let winningState = storedWinningState ? JSON.parse(storedWinningState) : 1;
+    console.log("Current level:", winningState);
     return winningState;
   } catch (error) {
     console.error("Failed to get winning state:", error);
