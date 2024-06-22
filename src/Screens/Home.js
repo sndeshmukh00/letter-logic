@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Share,
 } from "react-native";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { COLORS } from "../constants";
@@ -34,6 +34,7 @@ const Home = ({ navigation }) => {
   const [coins, setCoins] = useState(100);
 
   const handleAddCoins = () => {
+    console.log("coins clicked");
     setCoins(coins + 10);
   };
 
@@ -53,6 +54,12 @@ const Home = ({ navigation }) => {
   const handleToggleVibration = () => {
     // TODO: Implement vibration on/off toggle logic using custom hooks
     setVibrationOn(!vibrationOn);
+  };
+
+  // Handling logout
+  const handleLogout = () => {
+    console.log("logout clicked");
+    setIsLoggedIn(false);
   };
 
   const handleShare = async () => {
@@ -113,6 +120,24 @@ const Home = ({ navigation }) => {
           onClose={handleCloseHowToPlay}
         />
         <View style={styles.mainContainer}>
+          {!isLoggedIn ? (
+            <View style={styles.loginMenu}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AuthStack")}
+              >
+                <AntDesign name="login" size={30} color={COLORS.lightgrey} />
+                <Text style={styles.loginText}>Login</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.loginMenu}>
+              <TouchableOpacity onPress={() => handleLogout()}>
+                <AntDesign name="logout" size={30} color={COLORS.lightgrey} />
+                <Text style={styles.loginText}>logout</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           <View style={styles.coinMenu}>
             <CoinCapsule coins={coins} onAddCoins={handleAddCoins} />
           </View>
@@ -229,6 +254,22 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 20,
+    zIndex: 10,
+  },
+  loginMenu: {
+    color: COLORS.lightgrey,
+    fontSize: 20,
+    // position: "absolute",
+    zIndex: 10,
+    top: 20,
+    left: 20,
+  },
+  loginText: {
+    color: COLORS.lightgrey,
+    fontSize: 20,
+    position: "absolute",
+    // top: 20,
+    left: 36,
   },
   container2: {
     flex: 1,
