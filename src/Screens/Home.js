@@ -9,15 +9,20 @@ import {
   Share,
 } from "react-native";
 import { FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import { COLORS } from "../constants";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
 import SettingMenu from "../components/Popups/SettingPopup";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
+import ConfirmationPopup from "../components/Popups/ConfirmationPopup";
 import { getLevelCompleted } from "../hooks/usePersistGame";
+import { AuthContext } from "../Navigation/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Home = ({ navigation }) => {
+  const { isLoggedIn, useLogout } = useContext(AuthContext);
+
   const image = require("../../assets/homebg.jpg");
 
   const [level, setLevel] = useState(1);
@@ -26,7 +31,7 @@ const Home = ({ navigation }) => {
   const [musicOn, setMusicOn] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
   const [vibrationOn, setVibrationOn] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [logoutVisible, setLogoutVisible] = useState(false);
 
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
 
@@ -58,8 +63,12 @@ const Home = ({ navigation }) => {
 
   // Handling logout
   const handleLogout = () => {
-    console.log("logout clicked");
-    setIsLoggedIn(false);
+    setLogoutVisible(true);
+  };
+
+  const handleConfirmLogout = () => {
+    setLogoutVisible(false);
+    useLogout();
   };
 
   const handleShare = async () => {
@@ -91,16 +100,18 @@ const Home = ({ navigation }) => {
     setHowToPlayVisible(false);
   };
 
-  useEffect(() => {
-    getLevelCompleted().then((data) => {
-      try {
-        console.log(data);
-        setLevel(data);
-      } catch (error) {
-        console.error("Failed to set level:", error);
-      }
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getLevelCompleted().then((data) => {
+        try {
+          console.log(data);
+          setLevel(data);
+        } catch (error) {
+          console.error("Failed to set level:", error);
+        }
+      });
+    }, [isLoggedIn])
+  );
 
   return (
     <>
@@ -118,6 +129,13 @@ const Home = ({ navigation }) => {
         <HowToPlayPopup
           visible={howToPlayVisible}
           onClose={handleCloseHowToPlay}
+        />
+        <ConfirmationPopup
+          visible={logoutVisible}
+          onCancel={() => setLogoutVisible(false)}
+          onConfirm={() => handleConfirmLogout()}
+          title="Are you sure you want to log out?"
+          message="You may lose all your progress."
         />
         <View style={styles.mainContainer}>
           {!isLoggedIn ? (
@@ -166,7 +184,10 @@ const Home = ({ navigation }) => {
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate("NewGame")}
+              onPress={
+                () => {}
+                // handle logic with poping up confirmation then clearing level in storage
+              }
             >
               <Text style={styles.buttonText}>New Game</Text>
             </TouchableOpacity>

@@ -72,24 +72,21 @@ export const gettDailyChallengeCompleted = async () => {
 
 export const setLevelCompleted = async (level) => {
   try {
-    const user = JSON.parse(await AsyncStorage.getItem("user"));
+    // const user = JSON.parse(await AsyncStorage.getItem("user"));
     // Read the current winning state from AsyncStorage
-    const storedWinningState = await AsyncStorage.getItem("levelWinningState");
+    const storedUserLevel = await AsyncStorage.getItem("userLevel");
 
-    // Parse the retrieved state to an array
-    let winningState = level;
+    console.log("storeddd - ", storedUserLevel);
+    let wonLevel = level;
 
     // Check if the date already exists to avoid duplicates
-    if (winningState !== storedWinningState) {
+    if (wonLevel >= storedUserLevel) {
       try {
         // Save the updated array back to AsyncStorage
-        await AsyncStorage.setItem(
-          "levelWinningState",
-          JSON.stringify(winningState)
-        );
-        if (user) await saveLevel(winningState);
+        await AsyncStorage.setItem("userLevel", JSON.stringify(wonLevel));
+        // if (user) await saveLevel(winningState);
 
-        console.log("Level updated:", winningState);
+        console.log("Level updated:", wonLevel);
       } catch (error) {
         console.error("Failed to save winning state:", error);
       }
@@ -103,10 +100,10 @@ export const setLevelCompleted = async (level) => {
 
 export const getLevelCompleted = async () => {
   try {
-    const storedWinningState = await AsyncStorage.getItem("levelWinningState");
-    let winningState = storedWinningState ? JSON.parse(storedWinningState) : 1;
-    console.log("Current level:", winningState);
-    return winningState;
+    const storedLevel = await AsyncStorage.getItem("userLevel");
+    let wonLevel = storedLevel ? JSON.parse(storedLevel) : 1;
+    console.log("Current level:", wonLevel);
+    return wonLevel;
   } catch (error) {
     console.error("Failed to get winning state:", error);
     return [];

@@ -62,8 +62,7 @@ export default function MainGame({ navigation, route }) {
       navigation.navigate("DailyChallenges", { date: date });
     } else if (level) {
       setIsLoading(true);
-      const localLevel = (await getLevelCompleted()) + 1;
-      setLevelCompleted(localLevel); // Update the completed level
+      const localLevel = await getLevelCompleted();
       getWord(localLevel); // Fetch the word for the new level
     }
   };
@@ -158,11 +157,15 @@ export default function MainGame({ navigation, route }) {
   }, [currentRow]);
 
   // game status checking
-  const getGameState = () => {
+  const getGameState = async () => {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
+      if (level) {
+        const localLevel = await getLevelCompleted();
+        await setLevelCompleted(localLevel + 1);
+      }
+
       // if (date) setDailyChallengeCompleted(date);
-      // else if (level) setLevelCompleted(level);
       // Alert.alert("Hey!", "You won!");
       setPopupVisible(true);
     } else if (checkIfLost() && gameState !== "lost") {
