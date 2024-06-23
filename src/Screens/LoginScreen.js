@@ -22,7 +22,6 @@ const Login = ({ navigation }) => {
     //Handle Login logic if successfully logged in or not
     const userData = { email, password }; // Replace with real user data
     const response = await useLogin(userData);
-    console.log("here - ", response);
 
     if (response.success) {
       navigation.navigate("Home");
