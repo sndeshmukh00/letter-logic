@@ -58,9 +58,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const useLogout = async () => {
-    setIsLoggedIn(false);
-    setUser(null);
-    await AsyncStorage.removeItem("user");
+    try {
+      // await AsyncStorage.removeItem("@token");
+      // await AsyncStorage.removeItem("user");
+      await AsyncStorage.clear();
+      setIsLoggedIn(false);
+      setUser(null);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
