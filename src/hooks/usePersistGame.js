@@ -99,6 +99,7 @@ export const setLevelCompleted = async (level) => {
 };
 
 export const getLevelCompleted = async () => {
+  // await AsyncStorage.clear();
   try {
     const storedLevel = await AsyncStorage.getItem("userLevel");
     let wonLevel = storedLevel ? JSON.parse(storedLevel) : 1;
