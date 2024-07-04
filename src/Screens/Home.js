@@ -16,9 +16,11 @@ import SettingMenu from "../components/Popups/SettingPopup";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 import ConfirmationPopup from "../components/Popups/ConfirmationPopup";
 import { AuthContext } from "../Navigation/AuthContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateLevel } from "../store/actions/setUserData";
 
 const Home = ({ navigation }) => {
+  const dispatch = useDispatch(); // Initialize useDispatch hook
   const { isLoggedIn, useLogout } = useContext(AuthContext);
   const level = useSelector((state) => state.user.level); // Accessing the level from Redux store
   const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
@@ -30,6 +32,7 @@ const Home = ({ navigation }) => {
   const [vibrationOn, setVibrationOn] = useState(true);
   const [logoutVisible, setLogoutVisible] = useState(false);
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
+  const [newGameVisible, setNewGameVisible] = useState(false);
 
   const handleAddCoins = () => {
     // TODO: Add coins logic here via ads and purchase
@@ -58,6 +61,17 @@ const Home = ({ navigation }) => {
   const handleConfirmLogout = () => {
     setLogoutVisible(false);
     useLogout();
+  };
+
+  // Handling New Game Popup here
+  const handleNewGame = () => {
+    setNewGameVisible(true);
+    // navigation.navigate("Game");
+  };
+  const handleConfirmNewGame = () => {
+    setNewGameVisible(false);
+    dispatch(updateLevel(-1));
+    navigation.navigate("GameScreen", { level: 1 });
   };
 
   const handleShare = async () => {
@@ -112,6 +126,13 @@ const Home = ({ navigation }) => {
           title="Are you sure you want to log out?"
           message="You may lose all your progress."
         />
+        <ConfirmationPopup
+          visible={newGameVisible}
+          onCancel={() => setNewGameVisible(false)}
+          onConfirm={() => handleConfirmNewGame()}
+          title="Are you sure you want to start a new game?"
+          message="You may lose all your progress."
+        />
         <View style={styles.mainContainer}>
           {!isLoggedIn ? (
             <View style={styles.loginMenu}>
@@ -160,7 +181,9 @@ const Home = ({ navigation }) => {
             <TouchableOpacity
               style={styles.button}
               onPress={
-                () => {}
+                () => {
+                  handleNewGame();
+                }
                 // handle logic with poping up confirmation then clearing level in storage
               }
             >

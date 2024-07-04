@@ -30,10 +30,14 @@ const reducer = (state = initialState, action) => {
         user: { ...state.user, coins: state.user.coins + action.payload },
       };
     case "UPDATE_LEVEL":
-      return {
-        ...state,
-        user: { ...state.user, level: state.user.level + action.payload },
-      };
+      if (action.payload === -1) {
+        return { ...state, user: { ...state.user, level: 1 } };
+      } else {
+        return {
+          ...state,
+          user: { ...state.user, level: state.user.level + action.payload },
+        };
+      }
     case "UPDATE_DAILYCHALLENGE":
       console.log(
         "UPDATE_DAILYCHALLENGE - ",
