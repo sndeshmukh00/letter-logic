@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  Button,
   TouchableOpacity,
   Share,
 } from "react-native";
@@ -16,26 +15,20 @@ import CoinCapsule from "../components/Capsule/CoinCapsule";
 import SettingMenu from "../components/Popups/SettingPopup";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 import ConfirmationPopup from "../components/Popups/ConfirmationPopup";
-import { getLevelCompleted } from "../hooks/usePersistGame";
 import { AuthContext } from "../Navigation/AuthContext";
-import { useFocusEffect } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const Home = ({ navigation }) => {
   const { isLoggedIn, useLogout } = useContext(AuthContext);
-
+  const level = useSelector((state) => state.user.level); // Accessing the level from Redux store
   const image = require("../../assets/homebg.jpg");
-
-  const [level, setLevel] = useState(1);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [musicOn, setMusicOn] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
   const [vibrationOn, setVibrationOn] = useState(true);
   const [logoutVisible, setLogoutVisible] = useState(false);
-
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
-
-  // Coins Logic
   const [coins, setCoins] = useState(100);
 
   const handleAddCoins = () => {
@@ -46,22 +39,19 @@ const Home = ({ navigation }) => {
   const handleCloseSettingMenu = () => {
     setIsSettingsVisible(false);
   };
+
   const handleToggleMusic = () => {
-    // TODO: Implement music on/off toggle logic using custom hooks
     setMusicOn(!musicOn);
   };
 
   const handleToggleSound = () => {
-    // TODO: Implement sound on/off toggle logic using custom hooks
     setSoundOn(!soundOn);
   };
 
   const handleToggleVibration = () => {
-    // TODO: Implement vibration on/off toggle logic using custom hooks
     setVibrationOn(!vibrationOn);
   };
 
-  // Handling logout
   const handleLogout = () => {
     setLogoutVisible(true);
   };
@@ -91,7 +81,6 @@ const Home = ({ navigation }) => {
     }
   };
 
-  // Handling How to Play popup here
   const handleHowToPlay = () => {
     setHowToPlayVisible(true);
   };
@@ -99,19 +88,6 @@ const Home = ({ navigation }) => {
   const handleCloseHowToPlay = () => {
     setHowToPlayVisible(false);
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      getLevelCompleted().then((data) => {
-        try {
-          console.log(data);
-          setLevel(data);
-        } catch (error) {
-          console.error("Failed to set level:", error);
-        }
-      });
-    }, [isLoggedIn])
-  );
 
   return (
     <>
@@ -151,7 +127,7 @@ const Home = ({ navigation }) => {
             <View style={styles.loginMenu}>
               <TouchableOpacity onPress={() => handleLogout()}>
                 <AntDesign name="logout" size={30} color={COLORS.lightgrey} />
-                <Text style={styles.loginText}>logout</Text>
+                <Text style={styles.loginText}>Logout</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -239,8 +215,6 @@ const Home = ({ navigation }) => {
         </View>
       </ImageBackground>
       <StatusBar style="light" />
-
-      {/* {{//TODO: Add play levelwise //TODO: Add play Daily challenges.}} */}
     </>
   );
 };
@@ -280,7 +254,6 @@ const styles = StyleSheet.create({
   loginMenu: {
     color: COLORS.lightgrey,
     fontSize: 20,
-    // position: "absolute",
     zIndex: 10,
     top: 20,
     left: 20,
@@ -289,7 +262,6 @@ const styles = StyleSheet.create({
     color: COLORS.lightgrey,
     fontSize: 20,
     position: "absolute",
-    // top: 20,
     left: 36,
   },
   container2: {
