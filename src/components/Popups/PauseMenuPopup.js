@@ -18,6 +18,7 @@ const PauseMenu = ({
   musicOn,
   soundOn,
   vibrationOn,
+  handleHowToPlay,
 }) => {
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
@@ -62,7 +63,7 @@ const PauseMenu = ({
                 color="white"
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleHowToPlay}>
               <Ionicons name="help-circle-outline" size={32} color="white" />
             </TouchableOpacity>
           </View>

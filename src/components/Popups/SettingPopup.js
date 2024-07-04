@@ -19,6 +19,8 @@ import HowToPlayPopup from "./HowToPlayPopup";
 const SettingMenu = ({
   visible,
   onClose,
+  onLogin,
+  onLogout,
   onToggleMusic,
   onToggleSound,
   onToggleVibration,
@@ -46,6 +48,7 @@ const SettingMenu = ({
   };
   const handleConfirmDelete = () => {
     setisDeleteConfirmationVisible(false);
+    // TODO: Implement delete account functionality
   };
 
   const handleCancelDelete = () => {
@@ -85,7 +88,10 @@ const SettingMenu = ({
                 <Text style={styles.bannerText}>Settings</Text>
               </View>
               <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.button} onPress={onClose}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={isLoggedIn ? onLogout : onLogin}
+                >
                   <Text style={styles.buttonText}>
                     {isLoggedIn ? "Logout" : "Login"}
                   </Text>

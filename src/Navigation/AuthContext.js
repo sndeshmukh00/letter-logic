@@ -89,7 +89,6 @@ export const AuthProvider = ({ children }) => {
 
   const useLogout = async () => {
     try {
-      await AsyncStorage.clear();
       dispatch(logoutUser());
     } catch (error) {
       console.error(error);

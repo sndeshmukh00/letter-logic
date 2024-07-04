@@ -61,6 +61,7 @@ const Home = ({ navigation }) => {
   const handleConfirmLogout = () => {
     setLogoutVisible(false);
     useLogout();
+    setIsSettingsVisible(false);
   };
 
   // Handling New Game Popup here
@@ -106,8 +107,15 @@ const Home = ({ navigation }) => {
     <>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         <SettingMenu
+          isLoggedIn={isLoggedIn}
           visible={isSettingsVisible}
           onClose={handleCloseSettingMenu}
+          onLogin={() => {
+            handleCloseSettingMenu();
+            setLogoutVisible(false);
+            navigation.navigate("AuthStack");
+          }}
+          onLogout={handleLogout}
           onToggleMusic={handleToggleMusic}
           onToggleSound={handleToggleSound}
           onToggleVibration={handleToggleVibration}

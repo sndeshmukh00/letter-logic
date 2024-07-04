@@ -29,6 +29,7 @@ import { getLevelWord } from "../api/getLevelWord";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCoins, updateLevel } from "../store/actions/setUserData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 
 export default function MainGame({ navigation, route }) {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -57,6 +58,8 @@ export default function MainGame({ navigation, route }) {
   // For handling Game Status
   const [gameState, setGameState] = useState("playing"); //won, lost, playing
   const [popupVisible, setPopupVisible] = useState(false);
+
+  const [howToPlayVisible, setHowToPlayVisible] = useState(false);
 
   const handleHome = () => {
     setPopupVisible(false);
@@ -278,6 +281,14 @@ export default function MainGame({ navigation, route }) {
     // TODO: Implement hint logic here to reveal one letter in keyboard
   };
 
+  // Handling how to play button Logic Here:
+  const handleHowToPlay = () => {
+    setHowToPlayVisible(true);
+  };
+  const handleCloseHowToPlay = () => {
+    setHowToPlayVisible(false);
+  };
+
   // Persisting game state to LocalStorage
   const persistGameState = () => {
     usePersistGame(rows, currentRow, currentCell, gameState);
@@ -388,6 +399,11 @@ export default function MainGame({ navigation, route }) {
             musicOn={musicOn}
             soundOn={soundOn}
             vibrationOn={vibrationOn}
+            handleHowToPlay={handleHowToPlay}
+          />
+          <HowToPlayPopup
+            visible={howToPlayVisible}
+            onClose={handleCloseHowToPlay}
           />
           <View style={styles.scoreContainer}>
             <Image
