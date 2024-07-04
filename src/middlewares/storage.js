@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { updateLevelAPI } from "../api/saveData";
+import { updateCoinsAPI, updateLevelAPI } from "../api/saveData";
 
 const storageMiddleware = (store) => (next) => async (action) => {
   const result = next(action);
@@ -39,7 +39,7 @@ const storageMiddleware = (store) => (next) => async (action) => {
       if (state.isLoggedIn) {
         switch (action.type) {
           case "UPDATE_COINS":
-            await updateCoinsAPI(state.user.coins);
+            await updateCoinsAPI(action.payload, state.user.email);
             break;
           case "UPDATE_LEVEL":
             await updateLevelAPI(state.user.level, state.user.email);

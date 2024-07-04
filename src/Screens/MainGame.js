@@ -38,7 +38,6 @@ export default function MainGame({ navigation, route }) {
   const { date, level } = route.params;
   const [levelToDisplay, setLevelToDisplay] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  // console.log("Inside Main Game Component", date);
 
   const [gameLoaded, setGameLoaded] = useState(false);
   const image = require("../../assets/homebg.jpg");
@@ -167,14 +166,11 @@ export default function MainGame({ navigation, route }) {
 
   // game status checking
   const getGameState = async () => {
-    console.info(
-      "userData in storge from main game: ",
-      await AsyncStorage.getItem("userData")
-    );
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
       if (level) {
         dispatch(updateLevel(1));
+        dispatch(updateCoins(40));
 
         // await setLevelCompleted(localLevel + 1);
       }
