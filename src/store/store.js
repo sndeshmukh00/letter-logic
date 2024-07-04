@@ -11,6 +11,7 @@ const initialState = {
     level: 1,
     name: "guest",
     streak: 0,
+    hints: 2,
   },
   isLoggedIn: false,
 };
@@ -29,10 +30,30 @@ const reducer = (state = initialState, action) => {
         user: { ...state.user, coins: state.user.coins + action.payload },
       };
     case "UPDATE_LEVEL":
-      console.log(state.user.level + action.payload);
       return {
         ...state,
         user: { ...state.user, level: state.user.level + action.payload },
+      };
+    case "UPDATE_DAILYCHALLENGE":
+      console.log(
+        "UPDATE_DAILYCHALLENGE - ",
+        state.user.dailyChallenge + action.payload
+      );
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          dailyChallenge: state.user.dailyChallenge + action.payload,
+        },
+      };
+    case "UPDATE_HINTS":
+      console.log("UPDATE_HINTS - ", state.user.hints + action.payload);
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          hints: state.user.hints + action.payload,
+        },
       };
     case "SET_LOGIN_STATUS":
       return {

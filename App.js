@@ -16,6 +16,7 @@ export default function App() {
     level: 1,
     name: "guest",
     streak: 0,
+    hints: 2,
   };
 
   const setInitialData = async () => {
