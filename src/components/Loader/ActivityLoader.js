@@ -3,17 +3,19 @@ import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { PacmanIndicator } from "react-native-indicators";
 import { COLORS } from "../../constants";
 
-const ActivityLoader = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
+const ActivityLoader = ({ isLoading, title, subtitle = true }) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <PacmanIndicator color={COLORS.lightgrey} size={50} />
-        <Text style={styles.word}>Game is loading...</Text>
-        <Text style={styles.subtitle}>
-          This may depend on your internet speed.
-        </Text>
+        <Text style={styles.word}>{title ? title : "Game is loading..."}</Text>
+        {subtitle && (
+          <Text style={styles.subtitle}>
+            {subtitle === true
+              ? "This depend on your internet speed."
+              : subtitle}
+          </Text>
+        )}
       </View>
     </View>
   );

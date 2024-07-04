@@ -11,20 +11,24 @@ import {
 } from "react-native";
 import { AuthContext } from "../Navigation/AuthContext";
 import { COLORS } from "../constants";
+import ActivityLoader from "../components/Loader/ActivityLoader";
 
 const Login = ({ navigation }) => {
   const { useLogin } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
     //Handle Login logic if successfully logged in or not
     const userData = { email, password }; // Replace with real user data
     const response = await useLogin(userData);
 
     if (response.success) {
-      navigation.navigate("Home");
+      setIsLoading(false);
+      // navigation.navigate("Home");
     } else {
       setError(response.message);
     }
@@ -32,59 +36,70 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.mainContainer}>
-        <Image source={require("../../assets/logo.png")} style={styles.logo} />
-        <Text style={styles.title}>Login</Text>
-        {error && (
-          <Text
-            style={{
-              color: "red",
-              alignSelf: "center",
-              fontSize: 16,
-              marginBottom: 10,
-            }}
-          >
-            {error}
-          </Text>
-        )}
+      {isLoading ? (
+        <ActivityLoader
+          isLoading={isLoading}
+          title="Logging in..."
+          subtitle={false}
+        />
+      ) : (
+        <ScrollView style={styles.mainContainer}>
+          <Image
+            source={require("../../assets/logo.png")}
+            style={styles.logo}
+          />
+          <Text style={styles.title}>Login</Text>
+          {error && (
+            <Text
+              style={{
+                color: "red",
+                alignSelf: "center",
+                fontSize: 16,
+                marginBottom: 10,
+              }}
+            >
+              {error}
+            </Text>
+          )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholderTextColor={COLORS.lightgrey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholderTextColor={COLORS.lightgrey}
-        />
-        <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
-          </Pressable>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Pressable
-            style={styles.button2}
-            onPress={() => navigation.navigate("Signup")}
-          >
-            <Text style={styles.buttonText}>Create an account</Text>
-          </Pressable>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Pressable
-            style={styles.buttonLink}
-            onPress={() => navigation.navigate("AppStack")}
-          >
-            <Text style={styles.linkText}>Continue without login</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholderTextColor={COLORS.lightgrey}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholderTextColor={COLORS.lightgrey}
+          />
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Login</Text>
+            </Pressable>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              style={styles.button2}
+              onPress={() => navigation.navigate("Signup")}
+            >
+              <Text style={styles.buttonText}>Create an account</Text>
+            </Pressable>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              style={styles.buttonLink}
+              onPress={() => navigation.navigate("AppStack")}
+            >
+              <Text style={styles.linkText}>Continue without login</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      )}
     </View>
   );
 };
