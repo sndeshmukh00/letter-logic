@@ -1,39 +1,43 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../api/auth";
-import { getUserInfo } from "../api/getUserInfo";
+import { getUserInfo, syncLocalDataToOnline } from "../api/getUserInfo";
+import {
+  setUserData,
+  setLoginStatus,
+  logoutUser,
+} from "../store/actions/setUserData";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const token = await AsyncStorage.getItem("@token");
-      if (!token) {
-        setIsLoggedIn(false);
-        // setUser(JSON.parse(userData));
-      } else {
-        try {
-          const userData = await AsyncStorage.getItem("user");
+      try {
+        const token = await AsyncStorage.getItem("@token");
+        const userData = await AsyncStorage.getItem("userData");
+        if (token && userData) {
+          dispatch(setLoginStatus(true));
+          dispatch(setUserData(JSON.parse(userData)));
+        } else {
+          dispatch(setLoginStatus(false));
           if (userData) {
-            setIsLoggedIn(true);
-            setUser(JSON.parse(userData));
           }
-        } catch (error) {
-          console.error(error);
         }
+      } catch (error) {
+        console.error(error);
       }
     };
     checkLoginStatus();
-  }, []);
+  }, [dispatch]);
 
   const useLogin = async (userData) => {
     const response = await login(userData.email, userData.password);
-    console.log("jdfhsd - ", response);
-
     if (response.success) {
       try {
         await AsyncStorage.setItem("@token", JSON.stringify(response.token));
@@ -42,15 +46,41 @@ export const AuthProvider = ({ children }) => {
           response.token
         );
         if (userDataResponse && userDataResponse.success) {
-          setIsLoggedIn(true);
-          setUser(userDataResponse.user);
-          await AsyncStorage.setItem(
-            "user",
-            JSON.stringify(userDataResponse.user)
+          const localUserData = JSON.parse(
+            await AsyncStorage.getItem("userData")
           );
+          // Sync local data to online if user is new
+          if (
+            // localUserData &&
+            userDataResponse &&
+            userDataResponse.user.coins === 500 &&
+            userDataResponse.user.level === 1
+          ) {
+            const updatedUserData = {
+              coins: localUserData.coins,
+              level: localUserData.level,
+              dailyChallenge: localUserData.dailyChallenge,
+              email: userData.email,
+            };
+            try {
+              const syncResponse = await syncLocalDataToOnline(
+                (userData = updatedUserData),
+                (token = response.token)
+              );
+              if (syncResponse.success)
+                dispatch(setUserData(syncResponse.user));
+              console.log("syncResponse", syncResponse);
+            } catch (error) {
+              console.error(error);
+            }
+          } else {
+            dispatch(setUserData(userDataResponse.user));
+          }
+          dispatch(setLoginStatus(true));
+          return { success: true, message: "Login successful!" };
         } else return { message: "Something went wrong!" };
       } catch (error) {
-        console.error(error);
+        console.error("herrrr - ", error);
       }
     } else {
       alert(response.message);
@@ -59,11 +89,8 @@ export const AuthProvider = ({ children }) => {
 
   const useLogout = async () => {
     try {
-      // await AsyncStorage.removeItem("@token");
-      // await AsyncStorage.removeItem("user");
       await AsyncStorage.clear();
-      setIsLoggedIn(false);
-      setUser(null);
+      dispatch(logoutUser());
     } catch (error) {
       console.error(error);
     }

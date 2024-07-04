@@ -35,3 +35,41 @@ export const getUserInfo = async (email, token) => {
     console.error("Error fetching user info:", error);
   }
 };
+
+export const syncLocalDataToOnline = async (userData, token) => {
+  try {
+    let data = JSON.stringify({
+      email: userData.email,
+      coins: userData.coins,
+      level: userData.level,
+      dailyChallenge: userData.dailyChallenge,
+    });
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${API_URL}users/sync`,
+      headers: {
+        accept: "application/json",
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    return await axios
+      .request(config)
+      .then((response) => {
+        // Handle successful response
+        if (response.status === 200) {
+          return { success: true, user: response.data.user };
+        } else {
+          return { success: false };
+        }
+      })
+      .catch((error) => {
+        return { success: false };
+      });
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
