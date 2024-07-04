@@ -25,7 +25,15 @@ import ActivityLoader from "../components/Loader/ActivityLoader";
 import { getDailyWord } from "../api/getDailyWord";
 import { getLevelWord } from "../api/getLevelWord";
 
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { updateCoins, updateLevel } from "../store/actions/setUserData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function MainGame({ navigation, route }) {
+  const dispatch = useDispatch(); // Initialize useDispatch hook
+  const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
+
   const { date, level } = route.params;
   const [levelToDisplay, setLevelToDisplay] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +70,7 @@ export default function MainGame({ navigation, route }) {
       navigation.navigate("DailyChallenges", { date: date });
     } else if (level) {
       setIsLoading(true);
-      const localLevel = await getLevelCompleted();
+      const localLevel = localStateLevel;
       getWord(localLevel); // Fetch the word for the new level
     }
   };
@@ -158,11 +166,16 @@ export default function MainGame({ navigation, route }) {
 
   // game status checking
   const getGameState = async () => {
+    console.info(
+      "userData in storge from main game: ",
+      await AsyncStorage.getItem("userData")
+    );
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
       if (level) {
-        const localLevel = await getLevelCompleted();
-        await setLevelCompleted(localLevel + 1);
+        dispatch(updateLevel(1));
+
+        // await setLevelCompleted(localLevel + 1);
       }
 
       // if (date) setDailyChallengeCompleted(date);
@@ -296,11 +309,10 @@ export default function MainGame({ navigation, route }) {
       if (level) {
         getWord(level);
       } else {
-        const localLevel = await getLevelCompleted();
-        getWord(localLevel);
+        const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
+        getWord(localStateLevel);
       }
     };
-
     initializeGame();
   }, []);
 
@@ -318,21 +330,17 @@ export default function MainGame({ navigation, route }) {
     }
   }, [letters]);
 
-  // Reading game state from LocalStorage
-  useEffect(() => {
-    // if (!level) readState();
-  }, []);
-
-  const readState = async () => {
-    const data = await usePersistedData();
-    if (data) {
-      setGameState(data.gameState);
-      setRows(data.rows);
-      setCurrentCell(data.currentCell);
-      setCurrentRow(data.currentRow);
-    }
-    setGameLoaded(true);
-  };
+  // Maybe use this later for persisting half played game state
+  // const readState = async () => {
+  //   const data = await usePersistedData();
+  //   if (data) {
+  //     setGameState(data.gameState);
+  //     setRows(data.rows);
+  //     setCurrentCell(data.currentCell);
+  //     setCurrentRow(data.currentRow);
+  //   }
+  //   setGameLoaded(true);
+  // };
 
   return (
     <SafeAreaView style={[safeViewAndroid.AndroidSafeArea, styles.container]}>
