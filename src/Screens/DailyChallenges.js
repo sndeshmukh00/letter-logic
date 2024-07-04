@@ -16,6 +16,7 @@ const DailyChallenges = ({ navigation }) => {
   const [winningState, setWinningState] = useState([]);
 
   useEffect(() => {
+    // TODO: Implement this thing using State
     gettDailyChallengeCompleted().then((data) => {
       try {
         setWinningState(data);
