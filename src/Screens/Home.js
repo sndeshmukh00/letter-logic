@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 const Home = ({ navigation }) => {
   const { isLoggedIn, useLogout } = useContext(AuthContext);
   const level = useSelector((state) => state.user.level); // Accessing the level from Redux store
+  const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
   const image = require("../../assets/homebg.jpg");
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -29,11 +30,9 @@ const Home = ({ navigation }) => {
   const [vibrationOn, setVibrationOn] = useState(true);
   const [logoutVisible, setLogoutVisible] = useState(false);
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
-  const [coins, setCoins] = useState(100);
 
   const handleAddCoins = () => {
-    console.log("coins clicked");
-    setCoins(coins + 10);
+    // TODO: Add coins logic here via ads and purchase
   };
 
   const handleCloseSettingMenu = () => {

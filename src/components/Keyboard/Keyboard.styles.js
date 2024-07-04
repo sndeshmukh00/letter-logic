@@ -33,6 +33,16 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  hintKey: {
+    width: keyWidth - 8,
+    height: keyHeight - 6,
+    margin: 4,
+    marginVertical: 4,
+    borderRadius: 5,
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   keyText: {
     fontSize: 16,
     color: COLORS.lightgrey,

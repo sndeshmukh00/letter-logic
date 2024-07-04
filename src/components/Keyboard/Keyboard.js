@@ -6,6 +6,7 @@ import { MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
 
 const Keyboard = ({
   onKeyPressed = () => {},
+  handleHint = () => {},
   greenCaps = [],
   yellowCaps = [],
   greyCaps = [],
@@ -53,12 +54,14 @@ const Keyboard = ({
         >
           <Text style={styles.keyText}>SUBMIT</Text>
         </Pressable>
-        <MaterialCommunityIcons
-          style={styles.rank}
-          name={"lightbulb-on"}
-          size={36}
-          color="#ffcc00"
-        />
+        <Pressable onPress={() => handleHint()} style={styles.hintKey}>
+          <MaterialCommunityIcons
+            style={styles.rank}
+            name={"lightbulb-on"}
+            size={36}
+            color="#ffcc00"
+          />
+        </Pressable>
       </View>
       {KEYS.map((keyRow, i) => (
         <View style={styles.row} key={`row-${i}`}>

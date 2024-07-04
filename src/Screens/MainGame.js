@@ -33,6 +33,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function MainGame({ navigation, route }) {
   const dispatch = useDispatch(); // Initialize useDispatch hook
   const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
+  const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
 
   const { date, level } = route.params;
   const [levelToDisplay, setLevelToDisplay] = useState(0);
@@ -268,10 +269,17 @@ export default function MainGame({ navigation, route }) {
   };
 
   // Coins Logic
-  const [coins, setCoins] = useState(100);
-
   const handleAddCoins = () => {
-    setCoins(coins + 10);
+    // setCoins(coins + 10);
+    dispatch(updateCoins(+100));
+
+    // TODO: Add coins logic here via ads and purchase
+  };
+
+  // Handling Hints Logic Here:
+  const handleHint = () => {
+    dispatch(updateCoins(-100));
+    // TODO: Implement hint logic here to reveal one letter in keyboard
   };
 
   // Persisting game state to LocalStorage
@@ -418,6 +426,7 @@ export default function MainGame({ navigation, route }) {
           </ScrollView>
           <Keyboard
             onKeyPressed={(key) => onKeyPressed(key)}
+            handleHint={handleHint}
             greenCaps={greenCaps}
             yellowCaps={yellowCaps}
             greyCaps={greyCaps}
