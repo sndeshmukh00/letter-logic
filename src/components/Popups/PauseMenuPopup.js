@@ -9,7 +9,7 @@ import {
 const PauseMenu = ({
   visible,
   onClose,
-  onSave,
+  onHome,
   onRestart,
   onQuit,
   onToggleMusic,
@@ -30,8 +30,8 @@ const PauseMenu = ({
             <TouchableOpacity style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onSave}>
-              <Text style={styles.buttonText}>Save Progress</Text>
+            <TouchableOpacity style={styles.button} onPress={onHome}>
+              <Text style={styles.buttonText}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onRestart}>
               <Text style={styles.buttonText}>Restart</Text>

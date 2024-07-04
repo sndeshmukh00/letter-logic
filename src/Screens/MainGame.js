@@ -380,7 +380,7 @@ export default function MainGame({ navigation, route }) {
             visible={gameState === "paused"}
             onClose={handleClosePauseMenu}
             onRestart={handleRestart}
-            onSave={handleSave}
+            onHome={() => navigation.navigate("Home")}
             onQuit={handleQuit}
             onToggleMusic={handleToggleMusic}
             onToggleSound={handleToggleSound}
