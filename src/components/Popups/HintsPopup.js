@@ -3,63 +3,21 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import LottieView from "lottie-react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { updateHints } from "../../store/actions/setUserData";
-import {
-  RewardedAd,
-  RewardedAdEventType,
-  TestIds,
-} from "react-native-google-mobile-ads";
-
-const adUnitId = __DEV__
-  ? TestIds.REWARDED
-  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
-
-const rewarded = RewardedAd.createForAdRequest(adUnitId, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ["fashion", "clothing"],
-});
+import useRewardAd from "../Ads/rewaredAd";
+import { COLORS } from "../../constants";
 
 const HintsPopup = ({
   visible,
   onClose,
-  onWatchAd,
   onPurchase,
   useHints,
   useHintsByCoin,
 }) => {
-  console.log("first", visible);
   const dispatch = useDispatch();
   const coins = useSelector((state) => state.user.coins);
   const hints = useSelector((state) => state.user.hints);
 
-  //   For Ads
-  const [adLoaded, setAdLoaded] = useState(false);
-
-  useEffect(() => {
-    const unsubscribeLoaded = rewarded.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => {
-        setAdLoaded(true);
-      }
-    );
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      (reward) => {
-        console.log("User earned reward of ", reward);
-      }
-    );
-
-    // Start loading the rewarded ad straight away
-    rewarded.load();
-
-    // Unsubscribe from events on unmount
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-    };
-  }, []);
-  if (!adLoaded) {
-    return null;
-  }
+  const { isLoading, earned, play } = useRewardAd();
 
   const handleUseCoins = () => {
     if (coins >= 100) {
@@ -69,17 +27,31 @@ const HintsPopup = ({
       // onPurchase(); // Navigate to the purchase page if not enough coins
     }
   };
+
   const handleUseHint = () => {
     if (hints > 0) {
       useHints();
       onClose(); // Close the popup after using hints
     } else {
-      //   onWatchAd(); // Navigate to the watch ad page if no hints left
+      // showAd();
+      play();
     }
   };
+  useEffect(() => {
+    if (earned) {
+      dispatch(updateHints(1));
+      useHints();
+      onClose();
+    }
+  }, [earned]);
 
   return (
-    <Modal transparent={true} visible={visible} animationType="slide">
+    <Modal
+      transparent={true}
+      visible={visible}
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <LottieView
@@ -94,7 +66,11 @@ const HintsPopup = ({
           </Text>
 
           <Text style={styles.subMessage}>Available Hints : {hints}</Text>
-          <TouchableOpacity style={styles.button} onPress={handleUseHint}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleUseHint}
+            disabled={hints <= 0 && isLoading}
+          >
             <Text style={styles.buttonText}>
               {hints > 0 ? "Use 1 Hint" : "Watch Ad for Hint"}
             </Text>
@@ -154,7 +130,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: "#007BFF",
+    backgroundColor: COLORS.primary,
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
@@ -166,7 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   closeButton: {
-    backgroundColor: "grey",
+    backgroundColor: COLORS.grey,
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
