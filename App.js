@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from "./src/store/store.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
+import "expo-dev-client";
 
 export default function App() {
   // Setting AsyncStorage if app loaded for the first time
