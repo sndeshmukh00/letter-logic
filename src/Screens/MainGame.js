@@ -27,14 +27,20 @@ import { getLevelWord } from "../api/getLevelWord";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { updateCoins, updateLevel } from "../store/actions/setUserData";
+import {
+  updateCoins,
+  updateHints,
+  updateLevel,
+} from "../store/actions/setUserData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
+import GeneralPopup from "../components/Popups/GeneralPopup";
 
 export default function MainGame({ navigation, route }) {
   const dispatch = useDispatch(); // Initialize useDispatch hook
   const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
   const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
+  const hints = useSelector((state) => state.user.hints); // Accessing the hints from Redux store
 
   const { date, level } = route.params;
   const [levelToDisplay, setLevelToDisplay] = useState(0);
@@ -60,6 +66,7 @@ export default function MainGame({ navigation, route }) {
   const [popupVisible, setPopupVisible] = useState(false);
 
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
+  const [showNoMoreHints, setShowNoMoreHints] = useState(false);
 
   const handleHome = () => {
     setPopupVisible(false);
@@ -276,9 +283,29 @@ export default function MainGame({ navigation, route }) {
   };
 
   // Handling Hints Logic Here:
+  const [hintedKey, setHintedKey] = useState([]);
   const handleHint = () => {
-    dispatch(updateCoins(-100));
+    // dispatch(updateCoins(-100));
     // TODO: Implement hint logic here to reveal one letter in keyboard
+    // const remainingLetters = letters.filter(
+    //   (letter) =>
+    //     !greenCaps.includes(letter) &&
+    //     !yellowCaps.includes(letter) &&
+    //     !hintedKey.includes(letter)
+    // );
+    // if (hints <= 0 || coins < 100) {
+    //   setShowNoMoreHints(true);
+    // } else if (remainingLetters.length === 0) {
+    //   setShowNoMoreHints(true);
+    // } else if (remainingLetters.length > 0) {
+    //   const randomLetter =
+    //     remainingLetters[Math.floor(Math.random() * remainingLetters.length)];
+    //   // const hintedKeys = ;
+    //   console.log([...hintedKey, randomLetter]);
+    //   dispatch(updateHints(-1));
+    //   setHintedKey([...hintedKey, randomLetter]);
+    //   // setHintedKey(randomLetter, ...hintedKey);
+    // }
   };
 
   // Handling how to play button Logic Here:
@@ -363,6 +390,12 @@ export default function MainGame({ navigation, route }) {
         <ActivityLoader />
       ) : (
         <>
+          <GeneralPopup
+            visible={showNoMoreHints}
+            onCancel={() => setShowNoMoreHints(false)}
+            title="No more alphabets left!!"
+            message="All alphabets have been guessed!"
+          />
           <GamePopup
             visible={popupVisible}
             onHome={handleHome}
@@ -442,6 +475,7 @@ export default function MainGame({ navigation, route }) {
             greenCaps={greenCaps}
             yellowCaps={yellowCaps}
             greyCaps={greyCaps}
+            hintedKey={hintedKey}
             enterEnabled={currentCell === letters.length}
           />
         </>

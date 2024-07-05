@@ -8,6 +8,7 @@ const Keyboard = ({
   onKeyPressed = () => {},
   handleHint = () => {},
   greenCaps = [],
+  hintedKey = [],
   yellowCaps = [],
   greyCaps = [],
   enterEnabled = false,
@@ -27,6 +28,9 @@ const Keyboard = ({
     }
     if (greyCaps.includes(key)) {
       return COLORS.darkgrey;
+    }
+    if (hintedKey.includes(key)) {
+      return COLORS.primary;
     }
     return COLORS.grey;
   };

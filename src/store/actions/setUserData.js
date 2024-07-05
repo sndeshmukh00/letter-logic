@@ -13,6 +13,16 @@ export const updateLevel = (amount) => ({
   payload: amount,
 });
 
+export const updateDailyChallenge = (amount) => ({
+  type: "UPDATE_DAILYCHALLENGE",
+  payload: amount,
+});
+
+export const updateHints = (amount) => ({
+  type: "UPDATE_HINTS",
+  payload: amount,
+});
+
 export const syncLocalToOnline = (userData) => ({
   type: "SYNC_LOCAL_TO_ONLINE",
   payload: userData,
