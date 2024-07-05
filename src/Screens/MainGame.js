@@ -85,7 +85,7 @@ export default function MainGame({ navigation, route }) {
 
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
   const [showNoMoreHints, setShowNoMoreHints] = useState(false);
-  const [showHintsPopup, setShowHintsPopup] = useState(true);
+  const [showHintsPopup, setShowHintsPopup] = useState(false);
 
   // For ads
   const [adLoaded, setAdLoaded] = useState(false);
@@ -201,6 +201,7 @@ export default function MainGame({ navigation, route }) {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
       if (level && !restarted) {
+        setHintedKey([]);
         dispatch(updateLevel(1));
         dispatch(updateCoins(40));
 
@@ -307,17 +308,6 @@ export default function MainGame({ navigation, route }) {
 
   // Handling Hints Logic Here:
   const [hintedKey, setHintedKey] = useState([]);
-  const handleWatchAd = async () => {
-    // const ad = getRewardedAd(); // Initialize the rewarded ad
-    // ad.onAdEvent((type) => {
-    //   if (type === "rewarded") {
-    //     // Reward the user with a hint
-    //     // Dispatch an action or update state to give a hint
-    //     setShowHintsPopup(false);
-    //   }
-    // });
-    // showRewardedAd(ad); // Show the ad
-  };
 
   const handlePurchase = () => {
     // Navigate to the purchase page
@@ -326,27 +316,36 @@ export default function MainGame({ navigation, route }) {
 
   const handleHint = () => {
     setShowHintsPopup(true);
-    // dispatch(updateCoins(-100));
-    // TODO: Implement hint logic here to reveal one letter in keyboard
-    // const remainingLetters = letters.filter(
-    //   (letter) =>
-    //     !greenCaps.includes(letter) &&
-    //     !yellowCaps.includes(letter) &&
-    //     !hintedKey.includes(letter)
-    // );
-    // if (hints <= 0 || coins < 100) {
-    //   setShowNoMoreHints(true);
-    // } else if (remainingLetters.length === 0) {
-    //   setShowNoMoreHints(true);
-    // } else if (remainingLetters.length > 0) {
-    //   const randomLetter =
-    //     remainingLetters[Math.floor(Math.random() * remainingLetters.length)];
-    //   // const hintedKeys = ;
-    //   console.log([...hintedKey, randomLetter]);
-    //   dispatch(updateHints(-1));
-    //   setHintedKey([...hintedKey, randomLetter]);
-    //   // setHintedKey(randomLetter, ...hintedKey);
-    // }
+  };
+  const showHintOnKeyboard = async (key) => {
+    const remainingLetters = letters.filter(
+      (letter) =>
+        !greenCaps.includes(letter) &&
+        !yellowCaps.includes(letter) &&
+        !hintedKey.includes(letter)
+    );
+    if (remainingLetters.length === 0) {
+      setShowNoMoreHints(true);
+      return "NONEED";
+    } else if (remainingLetters.length > 0) {
+      const randomLetter =
+        remainingLetters[Math.floor(Math.random() * remainingLetters.length)];
+
+      console.log([...hintedKey, randomLetter]);
+      setHintedKey([...hintedKey, randomLetter]);
+    }
+  };
+  const handleUseHint = async () => {
+    const resp = await showHintOnKeyboard();
+    if (resp !== "NONEED") {
+      dispatch(updateHints(-1));
+    }
+  };
+  const handleUseHintByCoin = async () => {
+    const resp = await showHintOnKeyboard();
+    if (resp !== "NONEED") {
+      dispatch(updateCoins(-100));
+    }
   };
 
   // Handling how to play button Logic Here:
@@ -468,8 +467,9 @@ export default function MainGame({ navigation, route }) {
           <HintsPopup
             visible={showHintsPopup}
             onClose={() => setShowHintsPopup(false)}
-            onWatchAd={handleWatchAd}
             onPurchase={handlePurchase}
+            useHints={handleUseHint}
+            useHintsByCoin={handleUseHintByCoin}
           />
           <GamePopup
             visible={popupVisible}

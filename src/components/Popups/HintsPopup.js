@@ -1,20 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import LottieView from "lottie-react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCoins } from "../../store/actions/setUserData";
+import { updateHints } from "../../store/actions/setUserData";
+import {
+  RewardedAd,
+  RewardedAdEventType,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
-const HintsPopup = ({ visible, onClose, onWatchAd, onPurchase, useHints }) => {
+const adUnitId = __DEV__
+  ? TestIds.REWARDED
+  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+
+const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ["fashion", "clothing"],
+});
+
+const HintsPopup = ({
+  visible,
+  onClose,
+  onWatchAd,
+  onPurchase,
+  useHints,
+  useHintsByCoin,
+}) => {
+  console.log("first", visible);
   const dispatch = useDispatch();
   const coins = useSelector((state) => state.user.coins);
   const hints = useSelector((state) => state.user.hints);
 
+  //   For Ads
+  const [adLoaded, setAdLoaded] = useState(false);
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(
+      RewardedAdEventType.LOADED,
+      () => {
+        setAdLoaded(true);
+      }
+    );
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward) => {
+        console.log("User earned reward of ", reward);
+      }
+    );
+
+    // Start loading the rewarded ad straight away
+    rewarded.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
+  if (!adLoaded) {
+    return null;
+  }
+
   const handleUseCoins = () => {
     if (coins >= 100) {
-      dispatch(updateCoins(-100));
+      useHintsByCoin();
       onClose(); // Close the popup after using coins
     } else {
-      onPurchase(); // Navigate to the purchase page if not enough coins
+      // onPurchase(); // Navigate to the purchase page if not enough coins
     }
   };
   const handleUseHint = () => {
@@ -22,7 +74,7 @@ const HintsPopup = ({ visible, onClose, onWatchAd, onPurchase, useHints }) => {
       useHints();
       onClose(); // Close the popup after using hints
     } else {
-      onWatchAd(); // Navigate to the watch ad page if no hints left
+      //   onWatchAd(); // Navigate to the watch ad page if no hints left
     }
   };
 
@@ -54,7 +106,7 @@ const HintsPopup = ({ visible, onClose, onWatchAd, onPurchase, useHints }) => {
 
           <TouchableOpacity style={styles.button} onPress={handleUseCoins}>
             <Text style={styles.buttonText}>
-              {coins >= 100 ? "Use 100 Coins" : "Purchase Coins"}
+              {coins >= 100 ? "Use 100 Coins" : "Purchase/Earn Coins"}
             </Text>
           </TouchableOpacity>
 
