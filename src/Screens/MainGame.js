@@ -42,6 +42,7 @@ import {
   InterstitialAd,
   TestIds,
 } from "react-native-google-mobile-ads";
+import useHapticFeedBack from "../hooks/useHapticFeedBack";
 
 const androidAdmobInterstitial = "ca-app-pub-12345678910/12345678910";
 const productionID = androidAdmobInterstitial;
@@ -58,6 +59,9 @@ export default function MainGame({ navigation, route }) {
   const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
   const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
   const hints = useSelector((state) => state.user.hints); // Accessing the hints from Redux store
+
+  // HapticFeedBack hook
+  const { successHaptic, errorHaptic } = useHapticFeedBack();
 
   const { date, level } = route.params;
   const [levelToDisplay, setLevelToDisplay] = useState(0);
@@ -201,6 +205,7 @@ export default function MainGame({ navigation, route }) {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
       if (level && !restarted) {
+        successHaptic();
         setHintedKey([]);
         dispatch(updateLevel(1));
         dispatch(updateCoins(40));
@@ -212,6 +217,7 @@ export default function MainGame({ navigation, route }) {
       // Alert.alert("Hey!", "You won!");
       setPopupVisible(true);
     } else if (checkIfLost() && gameState !== "lost") {
+      errorHaptic();
       setGameState("lost");
       // Alert.alert("Hey!", "You lost!");
       setPopupVisible(true);

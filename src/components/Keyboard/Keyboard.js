@@ -4,6 +4,7 @@ import styles, { keyWidth } from "./Keyboard.styles";
 import { useState } from "react";
 import { MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import useHapticFeedBack from "../../hooks/useHapticFeedBack";
 
 const Keyboard = ({
   onKeyPressed = () => {},
@@ -14,9 +15,7 @@ const Keyboard = ({
   greyCaps = [],
   enterEnabled = false,
 }) => {
-  const vibrate = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-  };
+  const { softHaptic } = useHapticFeedBack();
   const [globalRank, setGlobalRank] = useState(1);
 
   const isLongButton = (key) => {
@@ -51,7 +50,10 @@ const Keyboard = ({
         />
 
         <Pressable
-          onPress={() => onKeyPressed(ENTER)}
+          onPress={() => {
+            softHaptic();
+            onKeyPressed(ENTER);
+          }}
           style={[
             styles.key,
             { width: keyWidth * 2.5 },
@@ -62,7 +64,13 @@ const Keyboard = ({
         >
           <Text style={styles.keyText}>SUBMIT</Text>
         </Pressable>
-        <Pressable onPress={() => handleHint()} style={styles.hintKey}>
+        <Pressable
+          onPress={() => {
+            softHaptic();
+            handleHint();
+          }}
+          style={styles.hintKey}
+        >
           <MaterialCommunityIcons
             style={styles.rank}
             name={"lightbulb-on"}
@@ -76,7 +84,7 @@ const Keyboard = ({
           {keyRow.map((key) => (
             <TouchableWithoutFeedback
               onPress={() => {
-                vibrate();
+                softHaptic();
                 onKeyPressed(key);
               }}
               disabled={greyCaps.includes(key)}
