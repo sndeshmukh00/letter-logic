@@ -331,7 +331,6 @@ export default function MainGame({ navigation, route }) {
       const randomLetter =
         remainingLetters[Math.floor(Math.random() * remainingLetters.length)];
 
-      console.log([...hintedKey, randomLetter]);
       setHintedKey([...hintedKey, randomLetter]);
     }
   };
