@@ -37,6 +37,21 @@ import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 import GeneralPopup from "../components/Popups/GeneralPopup";
 import HintsPopup from "../components/Popups/HintsPopup";
 // import { getRewardedAd } from "../../ads";
+import {
+  AdEventType,
+  InterstitialAd,
+  TestIds,
+} from "react-native-google-mobile-ads";
+
+const androidAdmobInterstitial = "ca-app-pub-12345678910/12345678910";
+const productionID = androidAdmobInterstitial;
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : productionID;
+// Make sure to always use a test ID when not in production
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  keywords: ["food", "cooking", "fruit"], // Update based on the most relevant keywords for your app/users, these are just random examples
+  requestNonPersonalizedAdsOnly: true, // Update based on the initial tracking settings from initialization earlier
+});
 
 export default function MainGame({ navigation, route }) {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -66,10 +81,14 @@ export default function MainGame({ navigation, route }) {
   // For handling Game Status
   const [gameState, setGameState] = useState("playing"); //won, lost, playing
   const [popupVisible, setPopupVisible] = useState(false);
+  const [restarted, setRestarted] = useState(false);
 
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
   const [showNoMoreHints, setShowNoMoreHints] = useState(false);
   const [showHintsPopup, setShowHintsPopup] = useState(true);
+
+  // For ads
+  const [adLoaded, setAdLoaded] = useState(false);
 
   const handleHome = () => {
     setPopupVisible(false);
@@ -181,7 +200,7 @@ export default function MainGame({ navigation, route }) {
   const getGameState = async () => {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
-      if (level) {
+      if (level && !restarted) {
         dispatch(updateLevel(1));
         dispatch(updateCoins(40));
 
@@ -247,6 +266,7 @@ export default function MainGame({ navigation, route }) {
         new Array(letters.length).fill("")
       )
     );
+    setRestarted(true);
     setGameState("playing");
   };
 
@@ -393,6 +413,34 @@ export default function MainGame({ navigation, route }) {
     }
   }, [letters]);
 
+  // Handling Interstitial Ads
+
+  useEffect(() => {
+    // Event listener for when the ad is loaded
+    const unsubscribeLoaded = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        setAdLoaded(true);
+      }
+    );
+    // Event listener for when the ad is closed
+    const unsubscribeClosed = interstitial.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        setAdLoaded(false);
+        // Load a new ad when the current ad is closed
+        interstitial.load();
+      }
+    );
+    // Start loading the interstitial ad straight away
+    interstitial.load();
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeClosed();
+    };
+  }, []);
+
   // Maybe use this later for persisting half played game state
   // const readState = async () => {
   //   const data = await usePersistedData();
@@ -425,9 +473,24 @@ export default function MainGame({ navigation, route }) {
           />
           <GamePopup
             visible={popupVisible}
-            onHome={handleHome}
-            onRestart={handleRestart}
-            onNext={handleNext}
+            onHome={() => {
+              if (adLoaded) {
+                interstitial.show();
+              }
+              handleHome();
+            }}
+            onRestart={() => {
+              if (adLoaded) {
+                interstitial.show();
+              }
+              handleRestart();
+            }}
+            onNext={() => {
+              if (adLoaded) {
+                interstitial.show();
+              }
+              handleNext();
+            }}
             win={gameState === "won"}
             getScore={getScoreMessage}
           />
@@ -450,8 +513,18 @@ export default function MainGame({ navigation, route }) {
           <PauseMenu
             visible={gameState === "paused"}
             onClose={handleClosePauseMenu}
-            onRestart={handleRestart}
-            onHome={() => navigation.navigate("Home")}
+            onRestart={() => {
+              if (adLoaded) {
+                interstitial.show();
+              }
+              handleRestart();
+            }}
+            onHome={() => {
+              if (adLoaded) {
+                interstitial.show();
+              }
+              handleHome();
+            }}
             onQuit={handleQuit}
             onToggleMusic={handleToggleMusic}
             onToggleSound={handleToggleSound}
