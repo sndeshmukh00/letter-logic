@@ -18,6 +18,7 @@ import ConfirmationPopup from "../components/Popups/ConfirmationPopup";
 import { AuthContext } from "../Navigation/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import { updateLevel } from "../store/actions/setUserData";
+import ComingSoonPopup from "../components/Popups/ComingSoonPopup";
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -33,6 +34,7 @@ const Home = ({ navigation }) => {
   const [logoutVisible, setLogoutVisible] = useState(false);
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
   const [newGameVisible, setNewGameVisible] = useState(false);
+  const [comingSoonVisible, setComingSoonVisible] = useState(false);
 
   const handleAddCoins = () => {
     // TODO: Add coins logic here via ads and purchase
@@ -141,6 +143,12 @@ const Home = ({ navigation }) => {
           title="Are you sure you want to start a new game?"
           message="You may lose all your progress."
         />
+        <ComingSoonPopup
+          visible={comingSoonVisible}
+          onClose={() => {
+            setComingSoonVisible(false);
+          }}
+        />
         <View style={styles.mainContainer}>
           {!isLoggedIn ? (
             <View style={styles.loginMenu}>
@@ -223,7 +231,10 @@ const Home = ({ navigation }) => {
 
               <TouchableOpacity
                 style={styles.icon}
-                onPress={() => navigation.navigate("Ranking")}
+                onPress={() => {
+                  setComingSoonVisible(true);
+                  // navigation.navigate("Ranking")
+                }}
               >
                 <FontAwesome name="trophy" size={30} color={COLORS.lightgrey} />
                 <Text style={styles.iconText}>Ranking</Text>
