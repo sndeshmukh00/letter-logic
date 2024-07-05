@@ -35,6 +35,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HowToPlayPopup from "../components/Popups/HowToPlayPopup";
 import GeneralPopup from "../components/Popups/GeneralPopup";
+import HintsPopup from "../components/Popups/HintsPopup";
+// import { getRewardedAd } from "../../ads";
 
 export default function MainGame({ navigation, route }) {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -67,6 +69,7 @@ export default function MainGame({ navigation, route }) {
 
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
   const [showNoMoreHints, setShowNoMoreHints] = useState(false);
+  const [showHintsPopup, setShowHintsPopup] = useState(true);
 
   const handleHome = () => {
     setPopupVisible(false);
@@ -284,7 +287,25 @@ export default function MainGame({ navigation, route }) {
 
   // Handling Hints Logic Here:
   const [hintedKey, setHintedKey] = useState([]);
+  const handleWatchAd = async () => {
+    // const ad = getRewardedAd(); // Initialize the rewarded ad
+    // ad.onAdEvent((type) => {
+    //   if (type === "rewarded") {
+    //     // Reward the user with a hint
+    //     // Dispatch an action or update state to give a hint
+    //     setShowHintsPopup(false);
+    //   }
+    // });
+    // showRewardedAd(ad); // Show the ad
+  };
+
+  const handlePurchase = () => {
+    // Navigate to the purchase page
+    // navigation.navigate("Purchase");
+  };
+
   const handleHint = () => {
+    setShowHintsPopup(true);
     // dispatch(updateCoins(-100));
     // TODO: Implement hint logic here to reveal one letter in keyboard
     // const remainingLetters = letters.filter(
@@ -395,6 +416,12 @@ export default function MainGame({ navigation, route }) {
             onCancel={() => setShowNoMoreHints(false)}
             title="No more alphabets left!!"
             message="All alphabets have been guessed!"
+          />
+          <HintsPopup
+            visible={showHintsPopup}
+            onClose={() => setShowHintsPopup(false)}
+            onWatchAd={handleWatchAd}
+            onPurchase={handlePurchase}
           />
           <GamePopup
             visible={popupVisible}
