@@ -18,6 +18,7 @@ const storageMiddleware = (store) => (next) => async (action) => {
   if (action.type === "LOGOUT_USER") {
     try {
       await AsyncStorage.setItem("userData", JSON.stringify(initialUserData));
+      await AsyncStorage.removeItem("@token");
     } catch (e) {
       console.error("Failed to remove user data", e);
     }
