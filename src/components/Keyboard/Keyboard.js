@@ -1,8 +1,9 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableWithoutFeedback } from "react-native";
 import { KEYS, ENTER, CLEAR, COLORS } from "../../constants";
 import styles, { keyWidth } from "./Keyboard.styles";
 import { useState } from "react";
 import { MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 const Keyboard = ({
   onKeyPressed = () => {},
@@ -13,6 +14,9 @@ const Keyboard = ({
   greyCaps = [],
   enterEnabled = false,
 }) => {
+  const vibrate = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+  };
   const [globalRank, setGlobalRank] = useState(1);
 
   const isLongButton = (key) => {
@@ -70,18 +74,24 @@ const Keyboard = ({
       {KEYS.map((keyRow, i) => (
         <View style={styles.row} key={`row-${i}`}>
           {keyRow.map((key) => (
-            <Pressable
-              onPress={() => onKeyPressed(key)}
+            <TouchableWithoutFeedback
+              onPress={() => {
+                vibrate();
+                onKeyPressed(key);
+              }}
               disabled={greyCaps.includes(key)}
               key={key}
-              style={[
-                styles.key,
-                isLongButton(key) ? { width: keyWidth * 1.4 } : {},
-                { backgroundColor: getKeyBGColor(key) },
-              ]}
             >
-              <Text style={styles.keyText}>{key.toUpperCase()}</Text>
-            </Pressable>
+              <View
+                style={[
+                  styles.key,
+                  isLongButton(key) ? { width: keyWidth * 1.4 } : {},
+                  { backgroundColor: getKeyBGColor(key) },
+                ]}
+              >
+                <Text style={styles.keyText}>{key.toUpperCase()}</Text>
+              </View>
+            </TouchableWithoutFeedback>
           ))}
         </View>
       ))}
