@@ -18,19 +18,7 @@ import HowToPlayPopup from "./HowToPlayPopup";
 import { setSoundStatus } from "../../store/actions/setUserData";
 import { useDispatch, useSelector } from "react-redux";
 
-const SettingMenu = ({
-  visible,
-  onClose,
-  onLogin,
-  onLogout,
-  onToggleMusic,
-  onToggleSound,
-  onToggleVibration,
-  musicOn,
-  soundOn,
-  vibrationOn,
-  isLoggedIn,
-}) => {
+const SettingMenu = ({ visible, onClose, onLogin, onLogout, isLoggedIn }) => {
   const dispatch = useDispatch();
   const muteMusic = useSelector((state) => state.muteMusic);
   const muteSounds = useSelector((state) => state.muteSounds);
