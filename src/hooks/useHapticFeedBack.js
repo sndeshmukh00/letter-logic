@@ -3,15 +3,18 @@ import { useEffect, useRef, useState } from "react";
 import * as Haptics from "expo-haptics";
 
 const useHapticFeedBack = () => {
-  const successHaptic = () => {
+  const successHaptic = (muteVibrations) => {
+    if (muteVibrations) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
-  const errorHaptic = () => {
+  const errorHaptic = (muteVibrations) => {
+    if (muteVibrations) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
   };
 
-  const softHaptic = () => {
+  const softHaptic = (muteVibrations) => {
+    if (muteVibrations) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
   };
 

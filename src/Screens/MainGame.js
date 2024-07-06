@@ -62,6 +62,8 @@ export default function MainGame({ navigation, route }) {
 
   // HapticFeedBack hook
   const { successHaptic, errorHaptic } = useHapticFeedBack();
+  const muteVibrations = useSelector((state) => state.muteVibrations);
+  const muteSounds = useSelector((state) => state.muteSounds);
 
   const { date, level } = route.params;
   const [levelToDisplay, setLevelToDisplay] = useState(0);
@@ -205,7 +207,7 @@ export default function MainGame({ navigation, route }) {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
       if (level && !restarted) {
-        successHaptic();
+        successHaptic(muteVibrations);
         setHintedKey([]);
         dispatch(updateLevel(1));
         dispatch(updateCoins(40));
@@ -217,7 +219,7 @@ export default function MainGame({ navigation, route }) {
       // Alert.alert("Hey!", "You won!");
       setPopupVisible(true);
     } else if (checkIfLost() && gameState !== "lost") {
-      errorHaptic();
+      errorHaptic(muteVibrations);
       setGameState("lost");
       // Alert.alert("Hey!", "You lost!");
       setPopupVisible(true);

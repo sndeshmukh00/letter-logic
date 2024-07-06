@@ -13,6 +13,9 @@ const initialState = {
     streak: 0,
     hints: 2,
   },
+  muteMusic: false,
+  muteSounds: false,
+  muteVibrations: false,
   isLoggedIn: false,
 };
 
@@ -63,6 +66,21 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: action.payload,
+      };
+    case "SET_SOUND_STATUS":
+      return {
+        ...state,
+        muteSounds: action.payload,
+      };
+    case "SET_MUSIC_STATUS":
+      return {
+        ...state,
+        muteMusic: action.payload,
+      };
+    case "SET_VIBRATION_STATUS":
+      return {
+        ...state,
+        muteVibrations: action.payload,
       };
     case "LOGOUT_USER":
       return {

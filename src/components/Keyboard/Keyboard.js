@@ -3,8 +3,9 @@ import { KEYS, ENTER, CLEAR, COLORS } from "../../constants";
 import styles, { keyWidth } from "./Keyboard.styles";
 import { useState } from "react";
 import { MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
 import useHapticFeedBack from "../../hooks/useHapticFeedBack";
+import useSoundEffects from "../../hooks/useSoundEffects";
+import { useSelector } from "react-redux";
 
 const Keyboard = ({
   onKeyPressed = () => {},
@@ -16,6 +17,9 @@ const Keyboard = ({
   enterEnabled = false,
 }) => {
   const { softHaptic } = useHapticFeedBack();
+  const { playSound } = useSoundEffects();
+  const muteSounds = useSelector((state) => state.muteSounds);
+  const muteVibrations = useSelector((state) => state.muteVibrations);
   const [globalRank, setGlobalRank] = useState(1);
 
   const isLongButton = (key) => {
@@ -51,7 +55,8 @@ const Keyboard = ({
 
         <Pressable
           onPress={() => {
-            softHaptic();
+            softHaptic(muteVibrations);
+            playSound("touch", muteSounds);
             onKeyPressed(ENTER);
           }}
           style={[
@@ -66,7 +71,8 @@ const Keyboard = ({
         </Pressable>
         <Pressable
           onPress={() => {
-            softHaptic();
+            softHaptic(muteVibrations);
+            playSound("touch", muteSounds);
             handleHint();
           }}
           style={styles.hintKey}
@@ -84,7 +90,8 @@ const Keyboard = ({
           {keyRow.map((key) => (
             <TouchableWithoutFeedback
               onPress={() => {
-                softHaptic();
+                softHaptic(muteVibrations);
+                playSound("keypress", muteSounds);
                 onKeyPressed(key);
               }}
               disabled={greyCaps.includes(key)}

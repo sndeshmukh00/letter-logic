@@ -15,6 +15,8 @@ import {
 } from "@expo/vector-icons";
 import ConfirmationPopup from "./ConfirmationPopup";
 import HowToPlayPopup from "./HowToPlayPopup";
+import { setSoundStatus } from "../../store/actions/setUserData";
+import { useDispatch, useSelector } from "react-redux";
 
 const SettingMenu = ({
   visible,
@@ -29,6 +31,10 @@ const SettingMenu = ({
   vibrationOn,
   isLoggedIn,
 }) => {
+  const dispatch = useDispatch();
+  const muteMusic = useSelector((state) => state.muteMusic);
+  const muteSounds = useSelector((state) => state.muteSounds);
+  const muteVibrations = useSelector((state) => state.muteVibrations);
   const [isDeleteConfirmationVisible, setisDeleteConfirmationVisible] =
     useState(false);
   const [isQuitConfirmationVisible, setIsQuitConfirmationVisible] =
@@ -127,23 +133,35 @@ const SettingMenu = ({
                 )}
               </View>
               <View style={styles.iconsContainer}>
-                <TouchableOpacity onPress={onToggleMusic}>
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch(setMusicStatus(!muteMusic));
+                  }}
+                >
                   <MaterialIcons
-                    name={musicOn ? "music-note" : "music-off"}
+                    name={!muteMusic ? "music-note" : "music-off"}
                     size={32}
                     color="white"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onToggleSound}>
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch(setSoundStatus(!muteSounds));
+                  }}
+                >
                   <MaterialIcons
-                    name={soundOn ? "volume-up" : "volume-off"}
+                    name={!muteSounds ? "volume-up" : "volume-off"}
                     size={32}
                     color="white"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onToggleVibration}>
+                <TouchableOpacity
+                  onPress={() => {
+                    dispatch(setMusicStatus(!muteVibrations));
+                  }}
+                >
                   <MaterialCommunityIcons
-                    name={vibrationOn ? "vibrate" : "vibrate-off"}
+                    name={!muteVibrations ? "vibrate" : "vibrate-off"}
                     size={32}
                     color="white"
                   />

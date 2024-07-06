@@ -14,6 +14,10 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const muteMusic = useSelector((state) => state.muteMusic);
+  const muteSounds = useSelector((state) => state.muteSounds);
+  const muteVibrations = useSelector((state) => state.muteVibrations);
+
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -96,7 +100,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, useLogin, useLogout }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        user,
+        useLogin,
+        useLogout,
+        muteMusic,
+        muteSounds,
+        muteVibrations,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

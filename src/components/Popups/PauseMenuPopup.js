@@ -5,6 +5,12 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setMusicStatus,
+  setSoundStatus,
+  setVibrationStatus,
+} from "../../store/actions/setUserData";
 
 const PauseMenu = ({
   visible,
@@ -20,6 +26,10 @@ const PauseMenu = ({
   vibrationOn,
   handleHowToPlay,
 }) => {
+  const dispatch = useDispatch();
+  const muteMusic = useSelector((state) => state.muteMusic);
+  const muteSounds = useSelector((state) => state.muteSounds);
+  const muteVibrations = useSelector((state) => state.muteVibrations);
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <View style={styles.overlay}>
@@ -42,23 +52,35 @@ const PauseMenu = ({
             </TouchableOpacity>
           </View>
           <View style={styles.iconsContainer}>
-            <TouchableOpacity onPress={onToggleMusic}>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setMusicStatus(!muteMusic));
+              }}
+            >
               <MaterialIcons
-                name={musicOn ? "music-note" : "music-off"}
+                name={!muteMusic ? "music-note" : "music-off"}
                 size={32}
                 color="white"
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onToggleSound}>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setSoundStatus(!muteSounds));
+              }}
+            >
               <MaterialIcons
-                name={soundOn ? "volume-up" : "volume-off"}
+                name={!muteSounds ? "volume-up" : "volume-off"}
                 size={32}
                 color="white"
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onToggleVibration}>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setVibrationStatus(!muteVibrations));
+              }}
+            >
               <MaterialCommunityIcons
-                name={vibrationOn ? "vibrate" : "vibrate-off"}
+                name={!muteVibrations ? "vibrate" : "vibrate-off"}
                 size={32}
                 color="white"
               />

@@ -32,6 +32,18 @@ export const setLoginStatus = (isLoggedIn) => ({
   type: "SET_LOGIN_STATUS",
   payload: isLoggedIn,
 });
+export const setSoundStatus = (soundStatus) => ({
+  type: "SET_SOUND_STATUS",
+  payload: soundStatus,
+});
+export const setMusicStatus = (musicStatus) => ({
+  type: "SET_MUSIC_STATUS",
+  payload: musicStatus,
+});
+export const setVibrationStatus = (vibrationStatus) => ({
+  type: "SET_VIBRATION_STATUS",
+  payload: vibrationStatus,
+});
 
 export const logoutUser = () => ({
   type: "LOGOUT_USER",
