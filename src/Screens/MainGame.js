@@ -43,6 +43,7 @@ import {
   TestIds,
 } from "react-native-google-mobile-ads";
 import useHapticFeedBack from "../hooks/useHapticFeedBack";
+import useSoundEffects from "../hooks/useSoundEffects";
 
 const androidAdmobInterstitial = "ca-app-pub-12345678910/12345678910";
 const productionID = androidAdmobInterstitial;
@@ -55,6 +56,7 @@ const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
 });
 
 export default function MainGame({ navigation, route }) {
+  const { playSound } = useSoundEffects();
   const dispatch = useDispatch(); // Initialize useDispatch hook
   const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
   const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
@@ -206,8 +208,9 @@ export default function MainGame({ navigation, route }) {
   const getGameState = async () => {
     if (checkIfWon() && gameState !== "won") {
       setGameState("won");
+      playSound("finish", muteSounds);
+      successHaptic(muteVibrations);
       if (level && !restarted) {
-        successHaptic(muteVibrations);
         setHintedKey([]);
         dispatch(updateLevel(1));
         dispatch(updateCoins(40));
@@ -220,6 +223,7 @@ export default function MainGame({ navigation, route }) {
       setPopupVisible(true);
     } else if (checkIfLost() && gameState !== "lost") {
       errorHaptic(muteVibrations);
+      playSound("lost", muteSounds);
       setGameState("lost");
       // Alert.alert("Hey!", "You lost!");
       setPopupVisible(true);
@@ -390,6 +394,7 @@ export default function MainGame({ navigation, route }) {
       setWord(levelWord.words);
       setLetters(levelWord.words.split(""));
     }
+    playSound("start", muteSounds);
     setIsLoading(false);
   };
 
