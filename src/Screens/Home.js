@@ -19,6 +19,7 @@ import { AuthContext } from "../Navigation/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import { updateLevel } from "../store/actions/setUserData";
 import ComingSoonPopup from "../components/Popups/ComingSoonPopup";
+import PurchasePopup from "../components/Popups/PurchasePopup";
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -35,8 +36,10 @@ const Home = ({ navigation }) => {
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
   const [newGameVisible, setNewGameVisible] = useState(false);
   const [comingSoonVisible, setComingSoonVisible] = useState(false);
+  const [isPurchasePopupVisible, setIsPurchasePopupVisible] = useState(false);
 
   const handleAddCoins = () => {
+    setIsPurchasePopupVisible(true);
     // TODO: Add coins logic here via ads and purchase
   };
 
@@ -108,6 +111,12 @@ const Home = ({ navigation }) => {
   return (
     <>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        {isPurchasePopupVisible && (
+          <PurchasePopup
+            isVisible={isPurchasePopupVisible}
+            onClose={() => setIsPurchasePopupVisible(false)}
+          />
+        )}
         <SettingMenu
           isLoggedIn={isLoggedIn}
           visible={isSettingsVisible}
