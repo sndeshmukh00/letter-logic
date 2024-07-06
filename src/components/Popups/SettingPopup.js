@@ -15,7 +15,11 @@ import {
 } from "@expo/vector-icons";
 import ConfirmationPopup from "./ConfirmationPopup";
 import HowToPlayPopup from "./HowToPlayPopup";
-import { setSoundStatus } from "../../store/actions/setUserData";
+import {
+  setSoundStatus,
+  setMusicStatus,
+  setVibrationStatus,
+} from "../../store/actions/setUserData";
 import { useDispatch, useSelector } from "react-redux";
 
 const SettingMenu = ({ visible, onClose, onLogin, onLogout, isLoggedIn }) => {
@@ -145,7 +149,7 @@ const SettingMenu = ({ visible, onClose, onLogin, onLogout, isLoggedIn }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    dispatch(setMusicStatus(!muteVibrations));
+                    dispatch(setVibrationStatus(!muteVibrations));
                   }}
                 >
                   <MaterialCommunityIcons

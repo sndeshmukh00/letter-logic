@@ -82,6 +82,14 @@ const reducer = (state = initialState, action) => {
         ...state,
         muteVibrations: action.payload,
       };
+    case "SET_SETTINGS":
+      console.log("settings Payload - ", action.payload);
+      return {
+        ...state,
+        muteMusic: action.payload.muteMusic,
+        muteVibrations: action.payload.muteVibrations,
+        muteSounds: action.payload.muteSounds,
+      };
     case "LOGOUT_USER":
       return {
         ...state,

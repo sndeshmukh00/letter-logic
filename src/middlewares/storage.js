@@ -33,6 +33,54 @@ const storageMiddleware = (store) => (next) => async (action) => {
     "SYNC_LOCAL_TO_ONLINE",
   ];
 
+  const settingsToSave = [
+    "SET_MUSIC_STATUS",
+    "SET_SOUND_STATUS",
+    "SET_VIBRATION_STATUS",
+  ];
+  if (settingsToSave.includes(action.type)) {
+    const state = store.getState();
+    try {
+      switch (action.type) {
+        case "SET_MUSIC_STATUS":
+          console.log("SET_MUSIC_STATUS", state);
+          await AsyncStorage.setItem(
+            "settings",
+            JSON.stringify({
+              muteSounds: state.muteSounds,
+              muteVibrations: state.muteVibrations,
+              muteMusic: state.muteMusic,
+            })
+          );
+          break;
+        case "SET_SOUND_STATUS":
+          await AsyncStorage.setItem(
+            "settings",
+            JSON.stringify({
+              muteSounds: state.muteSounds,
+              muteVibrations: state.muteVibrations,
+              muteMusic: state.muteMusic,
+            })
+          );
+          break;
+        case "SET_VIBRATION_STATUS":
+          await AsyncStorage.setItem(
+            "settings",
+            JSON.stringify({
+              muteSounds: state.muteSounds,
+              muteVibrations: state.muteVibrations,
+              muteMusic: state.muteMusic,
+            })
+          );
+          break;
+        default:
+          break;
+      }
+    } catch (e) {
+      console.error("Failed to save settings", e);
+    }
+  }
+
   if (actionsToSave.includes(action.type)) {
     const state = store.getState();
     try {

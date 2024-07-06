@@ -44,6 +44,10 @@ export const setVibrationStatus = (vibrationStatus) => ({
   type: "SET_VIBRATION_STATUS",
   payload: vibrationStatus,
 });
+export const setSettings = (settings) => ({
+  type: "SET_SETTINGS",
+  payload: settings,
+});
 
 export const logoutUser = () => ({
   type: "LOGOUT_USER",

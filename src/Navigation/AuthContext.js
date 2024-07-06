@@ -7,6 +7,7 @@ import {
   setUserData,
   setLoginStatus,
   logoutUser,
+  setSettings,
 } from "../store/actions/setUserData";
 
 export const AuthContext = createContext();
@@ -38,6 +39,22 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkLoginStatus();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const checkSettings = async () => {
+      try {
+        const settings = await AsyncStorage.getItem("settings");
+        console.log(settings);
+        if (settings) {
+          dispatch(setSettings(JSON.parse(settings)));
+        } else {
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    checkSettings();
   }, [dispatch]);
 
   const useLogin = async (userData) => {

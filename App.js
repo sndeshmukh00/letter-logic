@@ -19,11 +19,20 @@ export default function App() {
     streak: 0,
     hints: 2,
   };
+  const initialSettings = {
+    muteMusic: false,
+    muteSounds: false,
+    muteVibrations: false,
+  };
 
   const setInitialData = async () => {
+    const settings = await AsyncStorage.getItem("settings");
     const userData = await AsyncStorage.getItem("userData");
     if (!userData) {
       await AsyncStorage.setItem("userData", JSON.stringify(initialUserData));
+    }
+    if (!settings) {
+      await AsyncStorage.setItem("settings", JSON.stringify(initialSettings));
     }
   };
   useEffect(() => {
