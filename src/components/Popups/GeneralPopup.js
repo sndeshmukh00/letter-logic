@@ -9,9 +9,11 @@ const GeneralPopup = ({ visible, onCancel, title, message }) => {
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.message}>{message}</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.confirmButton} onPress={onCancel}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
+            {onCancel !== false && (
+              <TouchableOpacity style={styles.confirmButton} onPress={onCancel}>
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>

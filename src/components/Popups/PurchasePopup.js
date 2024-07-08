@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,19 @@ import {
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import { FlatList } from "react-native-gesture-handler";
+import useRewardAd from "../Ads/rewaredAd";
+import { updateCoins, updateHints } from "../../store/actions/setUserData";
+import GeneralPopup from "./GeneralPopup";
+import { useDispatch, useSelector } from "react-redux";
+import CoinCapsule from "../Capsule/CoinCapsule";
+import HintCapsule from "../Capsule/HintCapsule";
 
 const PurchasePopup = ({ isVisible, onClose }) => {
+  const { isLoading, isLoaded, earned, play } = useRewardAd();
+  const dispatch = useDispatch();
+  const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
+  const hints = useSelector((state) => state.user.hints); // Accessing the hints from Redux store
+
   const [selectedPackage, setSelectedPackage] = useState(null);
 
   const packages = [
@@ -65,46 +76,102 @@ const PurchasePopup = ({ isVisible, onClose }) => {
     },
   ];
 
+  const handlePurchase = async (pkg) => {
+    if (pkg.price === "Free") {
+      try {
+        setSelectedPackage(pkg);
+        play();
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      setSelectedPackage(pkg);
+    }
+  };
+
+  useEffect(() => {
+    if (earned) {
+      if (selectedPackage.name === "Free Coins by watching Ads") {
+        dispatch(updateCoins(100));
+      } else if (selectedPackage.name === "Free Hint by watching Ads") {
+        dispatch(updateHints(1));
+      }
+      //   onClose();
+    }
+  }, [earned]);
+
   const productCard = (pkg) => {
     return (
-      <View style={styles.card}>
-        <View style={styles.cardChild}>
-          <View style={styles.info}>
-            <Text>{pkg.name}</Text>
-            <>
-              <Text style={{ fontSize: 16 }}>
-                {pkg.coins && (
-                  <>
-                    <Image
-                      style={styles.icons}
-                      source={require("../../../assets/coin.png")}
-                    />{" "}
-                    {pkg.coins} Coins{" "}
-                  </>
-                )}
-                {pkg.hints && (
-                  <>
-                    <MaterialCommunityIcons
-                      style={styles.icons}
-                      name={"lightbulb-on"}
-                      size={24}
-                      color="#f4ac03"
-                    />
-                    {pkg.hints} Hints
-                  </>
-                )}
-              </Text>
-            </>
+      <TouchableOpacity onPress={() => handlePurchase(pkg)}>
+        <View
+          style={[
+            styles.card,
+            (pkg.name === "Value Bundle" || pkg.price === "Free") &&
+              styles.greenCard,
+          ]}
+        >
+          {pkg.name === "Value Bundle" && (
+            <View
+              style={{
+                position: "absolute",
+                left: 20,
+                top: -12,
+                backgroundColor: COLORS.primary,
+                paddingVertical: 4,
+                paddingHorizontal: 8,
+                borderRadius: 10,
+                zIndex: 10,
+              }}
+            >
+              <Text style={{ color: "#fff" }}>Best Selling</Text>
+            </View>
+          )}
+          <View style={styles.cardChild}>
+            <View style={styles.info}>
+              <Text>{pkg.name}</Text>
+              <>
+                <Text style={{ fontSize: 16 }}>
+                  {pkg.coins && (
+                    <>
+                      <Image
+                        style={styles.icons}
+                        source={require("../../../assets/coin.png")}
+                      />{" "}
+                      {pkg.coins} Coins{" "}
+                    </>
+                  )}
+                  {pkg.hints && (
+                    <>
+                      <MaterialCommunityIcons
+                        style={styles.icons}
+                        name={"lightbulb-on"}
+                        size={24}
+                        color="#f4ac03"
+                      />
+                      {pkg.hints} Hints
+                    </>
+                  )}
+                </Text>
+              </>
+            </View>
+            <Text style={styles.price}>{pkg.price}</Text>
           </View>
-          <Text style={styles.price}>{pkg.price}</Text>
+          {/* <Image src={} /> */}
         </View>
-        {/* <Image src={} /> */}
-      </View>
+      </TouchableOpacity>
     );
   };
 
   return (
     <Modal isVisible={isVisible} onBackdropPress={onClose}>
+      {isLoading && (
+        <GeneralPopup
+          visible={isLoading}
+          onCancel={false}
+          title="Loading"
+          message="Please wait your ad will load soon!"
+        />
+      )}
       <View style={styles.container}>
         <View
           style={{
@@ -122,6 +189,17 @@ const PurchasePopup = ({ isVisible, onClose }) => {
             />
             {/* <Text style={styles.closeButtonIcon}>X</Text> */}
           </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            alignItems: "center",
+            width: "100%",
+            justifyContent: "space-between",
+            flexDirection: "row",
+          }}
+        >
+          <CoinCapsule coins={coins} onAddCoins={false} />
+          <HintCapsule hints={hints} onAddHints={false} />
         </View>
         <View style={styles.packageContainer}>
           <View style={{ flex: 1, marginBottom: 50 }}>
@@ -179,7 +257,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     boxShadow: "10 10 35 0 #dedede",
   },
-
+  greenCard: {
+    backgroundColor: "#4f9749ff",
+  },
   cardChild: {
     margin: 4,
     flexDirection: "row",

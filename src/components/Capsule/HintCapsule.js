@@ -1,38 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-const CoinCapsule = ({ coins, onAddCoins }) => {
-  const [coin, setCoin] = useState(coins);
-  function coinConvertor(n, d) {
-    if (!n) return setCoin(0);
-    else if (n < 1000) return setCoin(n);
+const HintCapsule = ({ hints, onAddHints }) => {
+  const [hint, setHint] = useState(hints);
+  function hindConvertor(n, d) {
+    if (!n) return setHint(0);
+    else if (n < 1000) return setHint(n);
     (x = ("" + n).length), (p = Math.pow), (d = p(10, d));
     x -= x % 3;
-    setCoin(Math.round((n * d) / p(10, x)) / d + " kMGTPE"[x / 3]);
+    setHint(Math.round((n * d) / p(10, x)) / d + " kMGTPE"[x / 3]);
   }
   useEffect(() => {
-    coinConvertor(coins, 2);
-  }, [coins]);
+    hindConvertor(hints, 2);
+  }, [hints]);
   return (
     <View style={[styles.capsule, { backgroundColor: "#080808ee" }]}>
-      <MaterialIcons
-        name="stars"
-        size={25}
+      <MaterialCommunityIcons
+        style={styles.hintIcon}
+        name={"lightbulb-on"}
+        size={24}
         color="#f4ac03"
-        style={styles.coinIcon}
       />
-
       <Text
         style={[
-          styles.coinsText,
-          onAddCoins !== false ? {} : { marginRight: 8, alignSelf: "center" },
+          styles.hintsText,
+          onAddHints !== false ? {} : { marginRight: 8, alignSelf: "center" },
         ]}
       >
-        {coin}
+        {hint}
       </Text>
-      {onAddCoins !== false && (
-        <TouchableOpacity onPress={onAddCoins}>
+      {onAddHints !== false && (
+        <TouchableOpacity onPress={onAddHints}>
           <MaterialIcons
             name="add-circle-outline"
             size={25}
@@ -56,10 +55,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     justifyContent: "space-between",
   },
-  coinIcon: {
+  hintIcon: {
     marginRight: 8,
   },
-  coinsText: {
+  hintsText: {
     color: "white",
     fontSize: 18,
     textAlign: "center",
@@ -69,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CoinCapsule;
+export default HintCapsule;

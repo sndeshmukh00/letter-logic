@@ -20,12 +20,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateLevel } from "../store/actions/setUserData";
 import ComingSoonPopup from "../components/Popups/ComingSoonPopup";
 import PurchasePopup from "../components/Popups/PurchasePopup";
+import HintCapsule from "../components/Capsule/HintCapsule";
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize useDispatch hook
   const { isLoggedIn, useLogout } = useContext(AuthContext);
   const level = useSelector((state) => state.user.level); // Accessing the level from Redux store
   const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
+  const hints = useSelector((state) => state.user.hints); // Accessing the hints from Redux store
   const image = require("../../assets/homebg.jpg");
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -179,6 +181,8 @@ const Home = ({ navigation }) => {
 
           <View style={styles.coinMenu}>
             <CoinCapsule coins={coins} onAddCoins={handleAddCoins} />
+            <View style={styles.divider}></View>
+            <HintCapsule hints={hints} onAddHints={handleAddCoins} />
           </View>
           <View style={styles.logoContainer}>
             <Image
@@ -361,5 +365,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     marginTop: 5,
+  },
+  divider: {
+    width: "100%",
+    height: 1,
+    // backgroundColor: COLORS.lightgrey,
+    marginVertical: 4,
   },
 });
