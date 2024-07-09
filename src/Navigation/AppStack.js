@@ -9,17 +9,18 @@ import { AuthContext } from "./AuthContext";
 const Stack = createStackNavigator();
 
 const AppStack = () => {
-  const { muteMusic } = useContext(AuthContext);
+  // TODO: Add bgm music later
+  // const { muteMusic } = useContext(AuthContext);
 
-  const { playBGM, stopBGM } = useSoundEffects();
+  // const { playBGM, stopBGM } = useSoundEffects();
 
-  useEffect(() => {
-    if (!muteMusic) {
-      playBGM();
-    } else {
-      stopBGM();
-    }
-  }, [muteMusic]);
+  // useEffect(() => {
+  //   if (!muteMusic) {
+  //     playBGM();
+  //   } else {
+  //     stopBGM();
+  //   }
+  // }, [muteMusic]);
 
   return (
     <Stack.Navigator
