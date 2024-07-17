@@ -52,7 +52,7 @@ const PauseMenu = ({
             </TouchableOpacity>
           </View>
           <View style={styles.iconsContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 dispatch(setMusicStatus(!muteMusic));
               }}
@@ -62,7 +62,7 @@ const PauseMenu = ({
                 size={32}
                 color="white"
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={() => {
                 dispatch(setSoundStatus(!muteSounds));

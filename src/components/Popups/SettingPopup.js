@@ -125,7 +125,7 @@ const SettingMenu = ({ visible, onClose, onLogin, onLogout, isLoggedIn }) => {
                 )}
               </View>
               <View style={styles.iconsContainer}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     dispatch(setMusicStatus(!muteMusic));
                   }}
@@ -135,7 +135,7 @@ const SettingMenu = ({ visible, onClose, onLogin, onLogout, isLoggedIn }) => {
                     size={32}
                     color="white"
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                   onPress={() => {
                     dispatch(setSoundStatus(!muteSounds));
