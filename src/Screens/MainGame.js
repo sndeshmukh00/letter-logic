@@ -46,7 +46,7 @@ import useHapticFeedBack from "../hooks/useHapticFeedBack";
 import useSoundEffects from "../hooks/useSoundEffects";
 import PurchasePopup from "../components/Popups/PurchasePopup";
 
-const androidAdmobInterstitial = "ca-app-pub-12345678910/12345678910";
+const androidAdmobInterstitial = "ca-app-pub-9290496504908203/4337081979";
 const productionID = androidAdmobInterstitial;
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : productionID;
 // Make sure to always use a test ID when not in production
