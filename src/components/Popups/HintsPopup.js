@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateHints } from "../../store/actions/setUserData";
 import useRewardAd from "../Ads/rewaredAd";
 import { COLORS } from "../../constants";
+import ActivityLoader from "../Loader/ActivityLoader";
 
 const HintsPopup = ({
   visible,
@@ -46,52 +47,80 @@ const HintsPopup = ({
   }, [earned]);
 
   return (
-    <Modal
-      transparent={true}
-      visible={visible}
-      animationType="slide"
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <LottieView
-            source={require("../../../assets/hint.json")} // Your Lottie animation file
-            autoPlay
-            loop
-            style={styles.animation}
-          />
-          <Text style={styles.title}>Need a Hint?</Text>
-          <Text style={styles.message}>
-            Use one of your hints to reveal a letter!
-          </Text>
-
-          <Text style={styles.subMessage}>Available Hints : {hints}</Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleUseHint}
-            disabled={hints <= 0 && isLoading}
+    <>
+      <Modal
+        transparent={true}
+        visible={visible}
+        animationType="slide"
+        onRequestClose={onClose}
+      >
+        <View style={styles.overlay}>
+          <View
+            style={[
+              styles.container,
+              {
+                backgroundColor: isLoading ? "black" : "white",
+                height: isLoading ? 500 : "auto",
+                borderColor: isLoading ? "white" : "transparent",
+                borderWidth: isLoading ? 2 : 0,
+              },
+            ]}
           >
-            <Text style={styles.buttonText}>
-              {hints > 0 ? "Use 1 Hint" : "Watch Ad for Hint"}
-            </Text>
-          </TouchableOpacity>
+            {isLoading && (
+              <ActivityLoader
+                title={"Please Wait"}
+                subtitle={"Your Ad is loading..."}
+              />
+            )}
 
-          <Text style={styles.subMessage}>
-            {coins >= 100 ? "Use 100 Coins to Get 1 Hint" : "Not enough coins!"}
-          </Text>
+            {!isLoading && (
+              <>
+                <LottieView
+                  source={require("../../../assets/hint.json")} // Your Lottie animation file
+                  autoPlay
+                  loop
+                  style={styles.animation}
+                />
+                <Text style={styles.title}>Need a Hint?</Text>
+                <Text style={styles.message}>
+                  Use one of your hints to reveal a letter!
+                </Text>
 
-          <TouchableOpacity style={styles.button} onPress={handleUseCoins}>
-            <Text style={styles.buttonText}>
-              {coins >= 100 ? "Use 100 Coins" : "Purchase/Earn Coins"}
-            </Text>
-          </TouchableOpacity>
+                <Text style={styles.subMessage}>Available Hints : {hints}</Text>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleUseHint}
+                  disabled={hints <= 0 && isLoading}
+                >
+                  <Text style={styles.buttonText}>
+                    {hints > 0 ? "Use 1 Hint" : "Watch Ad for Hint"}
+                  </Text>
+                </TouchableOpacity>
 
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.buttonText}>Close</Text>
-          </TouchableOpacity>
+                <Text style={styles.subMessage}>
+                  {coins >= 100
+                    ? "Use 100 Coins to Get 1 Hint"
+                    : "Not enough coins!"}
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleUseCoins}
+                >
+                  <Text style={styles.buttonText}>
+                    {coins >= 100 ? "Use 100 Coins" : "Purchase/Earn Coins"}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </>
   );
 };
 
