@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
-const GeneralPopup = ({ visible, onCancel, title, message }) => {
+const GeneralPopup = ({ visible, onCancel, title, message, onCancelListener }) => {
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.container}>
@@ -10,7 +10,7 @@ const GeneralPopup = ({ visible, onCancel, title, message }) => {
           <Text style={styles.message}>{message}</Text>
           <View style={styles.buttonContainer}>
             {onCancel !== false && (
-              <TouchableOpacity style={styles.confirmButton} onPress={onCancel}>
+              <TouchableOpacity style={styles.confirmButton} onPress={() => onCancelListener()}>
                 <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             )}

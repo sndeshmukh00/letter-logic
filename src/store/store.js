@@ -42,10 +42,7 @@ const reducer = (state = initialState, action) => {
         };
       }
     case "UPDATE_DAILYCHALLENGE":
-      console.log(
-        "UPDATE_DAILYCHALLENGE - ",
-        state.user.dailyChallenge + action.payload
-      );
+      
       return {
         ...state,
         user: {
@@ -54,7 +51,6 @@ const reducer = (state = initialState, action) => {
         },
       };
     case "UPDATE_HINTS":
-      console.log("UPDATE_HINTS - ", state.user.hints + action.payload);
       return {
         ...state,
         user: {
@@ -83,7 +79,6 @@ const reducer = (state = initialState, action) => {
         muteVibrations: action.payload,
       };
     case "SET_SETTINGS":
-      console.log("settings Payload - ", action.payload);
       return {
         ...state,
         muteMusic: action.payload.muteMusic,

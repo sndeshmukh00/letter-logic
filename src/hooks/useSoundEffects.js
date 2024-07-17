@@ -97,46 +97,46 @@ const useSoundEffects = () => {
     }
   };
 
-  const playBGM = async () => {
-    try {
-      const bgm = soundObjects.current.bgm;
-      if (soundLoaded.current.bgm) {
-        runOnMainThread(async () => {
-          await bgm.playAsync();
-        });
-      } else {
-        const interval = setInterval(() => {
-          if (soundLoaded.current.bgm) {
-            clearInterval(interval);
-            runOnMainThread(async () => {
-              await bgm.playAsync();
-            });
-          }
-        }, 100);
-      }
-    } catch (error) {
-      console.error("Error playing BGM:", error);
-    }
-  };
+  // const playBGM = async () => {
+  //   try {
+  //     const bgm = soundObjects.current.bgm;
+  //     if (soundLoaded.current.bgm) {
+  //       runOnMainThread(async () => {
+  //         await bgm.playAsync();
+  //       });
+  //     } else {
+  //       const interval = setInterval(() => {
+  //         if (soundLoaded.current.bgm) {
+  //           clearInterval(interval);
+  //           runOnMainThread(async () => {
+  //             await bgm.playAsync();
+  //           });
+  //         }
+  //       }, 100);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error playing BGM:", error);
+  //   }
+  // };
 
-  const stopBGM = async () => {
-    try {
-      const bgm = soundObjects.current.bgm;
-      const status = await bgm.getStatusAsync();
-      if (status.isPlaying) {
-        runOnMainThread(async () => {
-          await bgm.stopAsync();
-        });
-      }
-    } catch (error) {
-      console.error("Error stopping BGM:", error);
-    }
-  };
+  // const stopBGM = async () => {
+  //   try {
+  //     const bgm = soundObjects.current.bgm;
+  //     const status = await bgm.getStatusAsync();
+  //     if (status.isPlaying) {
+  //       runOnMainThread(async () => {
+  //         await bgm.stopAsync();
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error stopping BGM:", error);
+  //   }
+  // };
 
   return {
     playSound,
-    playBGM,
-    stopBGM,
+    // playBGM,
+    // stopBGM,
   };
 };
 

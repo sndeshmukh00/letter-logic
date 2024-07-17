@@ -26,6 +26,8 @@ const PurchasePopup = ({ isVisible, onClose }) => {
   const hints = useSelector((state) => state.user.hints); // Accessing the hints from Redux store
 
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const [purchaseIssuePopup, setPurchaseIssuePopup ] = useState(false);
+  const [showError, setShowError] = useState(null);
 
   const packages = [
     {
@@ -86,6 +88,9 @@ const PurchasePopup = ({ isVisible, onClose }) => {
       }
     } else {
       setSelectedPackage(pkg);
+      if(pkg.id<=4){
+        setPurchaseIssuePopup(true)
+      }
     }
   };
 
@@ -95,6 +100,8 @@ const PurchasePopup = ({ isVisible, onClose }) => {
         dispatch(updateCoins(100));
       } else if (selectedPackage.name === "Free Hint by watching Ads") {
         dispatch(updateHints(1));
+      } else {
+        setShowError("Something went wrong! Reward not granted.");
       }
       //   onClose();
     }
@@ -172,6 +179,16 @@ const PurchasePopup = ({ isVisible, onClose }) => {
           message="Please wait your ad will load soon!"
         />
       )}
+      {
+      purchaseIssuePopup && (
+        <GeneralPopup
+          visible={purchaseIssuePopup}
+          onCancel={true}
+          onCancelListener={() => setPurchaseIssuePopup(false)}
+          title="Failed"
+          message="Purchase is not available! We will bring it soon!"
+          />
+        )}
       <View style={styles.container}>
         <View
           style={{

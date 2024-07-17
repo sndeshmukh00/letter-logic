@@ -43,7 +43,7 @@ const storageMiddleware = (store) => (next) => async (action) => {
     try {
       switch (action.type) {
         case "SET_MUSIC_STATUS":
-          console.log("SET_MUSIC_STATUS", state);
+          // console.log("SET_MUSIC_STATUS", state);
           await AsyncStorage.setItem(
             "settings",
             JSON.stringify({

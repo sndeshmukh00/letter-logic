@@ -44,6 +44,7 @@ import {
 } from "react-native-google-mobile-ads";
 import useHapticFeedBack from "../hooks/useHapticFeedBack";
 import useSoundEffects from "../hooks/useSoundEffects";
+import PurchasePopup from "../components/Popups/PurchasePopup";
 
 const androidAdmobInterstitial = "ca-app-pub-12345678910/12345678910";
 const productionID = androidAdmobInterstitial;
@@ -94,6 +95,8 @@ export default function MainGame({ navigation, route }) {
   const [howToPlayVisible, setHowToPlayVisible] = useState(false);
   const [showNoMoreHints, setShowNoMoreHints] = useState(false);
   const [showHintsPopup, setShowHintsPopup] = useState(false);
+
+  const [isPurchasePopupVisible, setIsPurchasePopupVisible] = useState(false);
 
   // For ads
   const [adLoaded, setAdLoaded] = useState(false);
@@ -312,10 +315,7 @@ export default function MainGame({ navigation, route }) {
 
   // Coins Logic
   const handleAddCoins = () => {
-    // setCoins(coins + 10);
-    dispatch(updateCoins(+100));
-
-    // TODO: Add coins logic here via ads and purchase
+    setIsPurchasePopupVisible(true);
   };
 
   // Handling Hints Logic Here:
@@ -380,7 +380,7 @@ export default function MainGame({ navigation, route }) {
   const getWord = async (localLevel) => {
     if (date) {
       const dailyWord = await getDailyWord(date);
-      console.log(dailyWord);
+      // console.log(dailyWord);
       setWord(dailyWord.words);
       setLetters(dailyWord.words.split(""));
     } else if (localLevel) {
@@ -390,7 +390,7 @@ export default function MainGame({ navigation, route }) {
         // return;
       }
       setLevelToDisplay(localLevel);
-      console.log(levelWord);
+      // console.log(levelWord);
       setWord(levelWord.words);
       setLetters(levelWord.words.split(""));
     }
@@ -470,6 +470,12 @@ export default function MainGame({ navigation, route }) {
         <ActivityLoader />
       ) : (
         <>
+          {isPurchasePopupVisible && (
+            <PurchasePopup
+              isVisible={isPurchasePopupVisible}
+              onClose={() => setIsPurchasePopupVisible(false)}
+            />
+          )}
           <GeneralPopup
             visible={showNoMoreHints}
             onCancel={() => setShowNoMoreHints(false)}

@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     const checkSettings = async () => {
       try {
         const settings = await AsyncStorage.getItem("settings");
-        console.log(settings);
+        // console.log(settings);
         if (settings) {
           dispatch(setSettings(JSON.parse(settings)));
         } else {
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
               );
               if (syncResponse.success)
                 dispatch(setUserData(syncResponse.user));
-              console.log("syncResponse", syncResponse);
+              // console.log("syncResponse", syncResponse);
             } catch (error) {
               console.error(error);
             }
