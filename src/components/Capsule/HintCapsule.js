@@ -15,32 +15,34 @@ const HintCapsule = ({ hints, onAddHints }) => {
     hindConvertor(hints, 2);
   }, [hints]);
   return (
-    <View style={[styles.capsule, { backgroundColor: "#080808ee" }]}>
-      <MaterialCommunityIcons
-        style={styles.hintIcon}
-        name={"lightbulb-on"}
-        size={24}
-        color="#f4ac03"
-      />
-      <Text
-        style={[
-          styles.hintsText,
-          onAddHints !== false ? {} : { marginRight: 8, alignSelf: "center" },
-        ]}
-      >
-        {hint}
-      </Text>
-      {onAddHints !== false && (
-        <TouchableOpacity onPress={onAddHints}>
-          <MaterialIcons
-            name="add-circle-outline"
-            size={25}
-            color="#2fff00"
-            style={styles.plusIcon}
-          />
-        </TouchableOpacity>
-      )}
-    </View>
+    <TouchableOpacity onPress={onAddHints} disabled={onAddHints === false}>
+      <View style={[styles.capsule, { backgroundColor: "#080808ee" }]}>
+        <MaterialCommunityIcons
+          style={styles.hintIcon}
+          name={"lightbulb-on"}
+          size={24}
+          color="#f4ac03"
+        />
+        <Text
+          style={[
+            styles.hintsText,
+            onAddHints !== false ? {} : { marginRight: 8, alignSelf: "center" },
+          ]}
+        >
+          {hint}
+        </Text>
+        {onAddHints !== false && (
+          // <TouchableOpacity onPress={onAddHints}>
+            <MaterialIcons
+              name="add-circle-outline"
+              size={25}
+              color="#2fff00"
+              style={styles.plusIcon}
+            />
+          // </TouchableOpacity>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 };
 

@@ -47,8 +47,8 @@ const Home = ({ navigation }) => {
       setHowToPlayVisible(true);
       AsyncStorage.setItem("howToPlayShown", "true");
     }
-  }
-  handleShowHowToPlay()
+  };
+  handleShowHowToPlay();
 
   const handleAddCoins = () => {
     setIsPurchasePopupVisible(true);
@@ -173,7 +173,9 @@ const Home = ({ navigation }) => {
           {!isLoggedIn ? (
             <View style={styles.loginMenu}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("AuthStack")}
+                onPress={() => {navigation.navigate("AuthStack")}}
+                style={styles.loginButton}
+                disabled={isLoggedIn}
               >
                 <AntDesign name="login" size={30} color={COLORS.lightgrey} />
                 <Text style={styles.loginText}>Login</Text>
@@ -181,7 +183,11 @@ const Home = ({ navigation }) => {
             </View>
           ) : (
             <View style={styles.loginMenu}>
-              <TouchableOpacity onPress={() => handleLogout()}>
+              <TouchableOpacity
+                onPress={() => handleLogout()}
+                style={styles.loginButton}
+                disabled={!isLoggedIn}
+              >
                 <AntDesign name="logout" size={30} color={COLORS.lightgrey} />
                 <Text style={styles.loginText}>Logout</Text>
               </TouchableOpacity>
@@ -202,7 +208,7 @@ const Home = ({ navigation }) => {
           <View style={styles.container2}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate("DailyChallenges")}
+              onPress={() => {navigation.navigate("DailyChallenges")}}
             >
               <Text style={styles.buttonText}>Daily Challenge</Text>
             </TouchableOpacity>
@@ -210,7 +216,9 @@ const Home = ({ navigation }) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() =>
+               {
                 navigation.navigate("GameScreen", { level: level })
+               }
               }
             >
               <Text style={styles.buttonText}>Continue Level {level}</Text>
@@ -320,6 +328,12 @@ const styles = StyleSheet.create({
     zIndex: 10,
     top: 20,
     left: 20,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  loginButton: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   loginText: {
     color: COLORS.lightgrey,

@@ -15,33 +15,36 @@ const CoinCapsule = ({ coins, onAddCoins }) => {
     coinConvertor(coins, 2);
   }, [coins]);
   return (
-    <View style={[styles.capsule, { backgroundColor: "#080808ee" }]}>
-      <MaterialIcons
-        name="stars"
-        size={25}
-        color="#f4ac03"
-        style={styles.coinIcon}
-      />
+    <TouchableOpacity onPress={onAddCoins} disabled={onAddCoins === false}> 
 
-      <Text
-        style={[
-          styles.coinsText,
-          onAddCoins !== false ? {} : { marginRight: 8, alignSelf: "center" },
-        ]}
-      >
-        {coin}
-      </Text>
-      {onAddCoins !== false && (
-        <TouchableOpacity onPress={onAddCoins}>
-          <MaterialIcons
-            name="add-circle-outline"
-            size={25}
-            color="#2fff00"
-            style={styles.plusIcon}
-          />
-        </TouchableOpacity>
-      )}
-    </View>
+      <View style={[styles.capsule, { backgroundColor: "#080808ee" }]}>
+        <MaterialIcons
+          name="stars"
+          size={25}
+          color="#f4ac03"
+          style={styles.coinIcon}
+        />
+
+        <Text
+          style={[
+            styles.coinsText,
+            onAddCoins !== false ? {} : { marginRight: 8, alignSelf: "center" },
+          ]}
+        >
+          {coin}
+        </Text>
+        {onAddCoins !== false && (
+          // <TouchableOpacity onPress={onAddCoins}>
+            <MaterialIcons
+              name="add-circle-outline"
+              size={25}
+              color="#2fff00"
+              style={styles.plusIcon}
+            />
+          // </TouchableOpacity>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 };
 
