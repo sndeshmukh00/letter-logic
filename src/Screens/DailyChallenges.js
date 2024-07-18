@@ -64,12 +64,16 @@ const DailyChallenges = ({ navigation }) => {
     return winningState.includes(formatDateString(date));
   };
 
+  const isDayDisabled = (date) => {
+    const cutoffDate = moment.utc("2024-07-17");
+    return date.isBefore(cutoffDate, "day");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handlePrevMonth}>
           <AntDesign name="caretleft" size={32} color="black" />
-
         </TouchableOpacity>
         <Text style={styles.headerText}>{currentDate.format("MMMM YYYY")}</Text>
         <TouchableOpacity onPress={handleNextMonth}>
@@ -83,10 +87,21 @@ const DailyChallenges = ({ navigation }) => {
         keyExtractor={(item) => item.format("YYYYMMDD")}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={[styles.day, isDayWon(item) && styles.wonDay]}
-            onPress={() => handleSelectDay(item)}
+            style={[
+              styles.day,
+              isDayWon(item) && styles.wonDay,
+              isDayDisabled(item) && styles.disabledDay,
+            ]}
+            onPress={() => !isDayDisabled(item) && handleSelectDay(item)}
+            disabled={isDayDisabled(item)}
           >
-            <Text style={[styles.dayText, isDayWon(item) && styles.wonDayText]}>
+            <Text
+              style={[
+                styles.dayText,
+                isDayWon(item) && styles.wonDayText,
+                isDayDisabled(item) && styles.disabledDayText,
+              ]}
+            >
               {item.format("D")}
             </Text>
           </TouchableOpacity>
@@ -140,6 +155,12 @@ const styles = StyleSheet.create({
   wonDayText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  disabledDay: {
+    backgroundColor: "#d3d3d3",
+  },
+  disabledDayText: {
+    color: "#a9a9a9",
   },
   dayText: {
     fontSize: 16,
