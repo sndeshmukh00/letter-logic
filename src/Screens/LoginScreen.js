@@ -24,13 +24,17 @@ const Login = ({ navigation }) => {
     setIsLoading(true);
     //Handle Login logic if successfully logged in or not
     const userData = { email, password }; // Replace with real user data
-    const response = await useLogin(userData);
-
-    if (response.success) {
+    try {
+      const response = await useLogin(userData);
+      if (response.success) {
+        setIsLoading(false);
+        // navigation.navigate("Home");
+      } else {
+        setError(response.message);
+      }
+    } catch (error) {
+      console.error(error);
       setIsLoading(false);
-      // navigation.navigate("Home");
-    } else {
-      setError(response.message);
     }
   };
 
