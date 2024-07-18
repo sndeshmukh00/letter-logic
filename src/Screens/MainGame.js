@@ -98,8 +98,14 @@ export default function MainGame({ navigation, route }) {
 
   const [isPurchasePopupVisible, setIsPurchasePopupVisible] = useState(false);
 
+  const [error, setError] = useState(false);
+
   // For ads
   const [adLoaded, setAdLoaded] = useState(false);
+
+  // Fetching Previous Route:
+  const routes = navigation.getState()?.routes;
+  const prevRoute = routes[routes.length - 2];
 
   const handleHome = () => {
     setPopupVisible(false);
@@ -379,20 +385,34 @@ export default function MainGame({ navigation, route }) {
 
   const getWord = async (localLevel) => {
     if (date) {
-      const dailyWord = await getDailyWord(date);
-      // console.log(dailyWord);
-      setWord(dailyWord.words);
-      setLetters(dailyWord.words.split(""));
-    } else if (localLevel) {
-      const levelWord = await getLevelWord(localLevel);
-      if (!levelWord) {
-        // Implement error handling
-        // return;
+      try {
+        const dailyWord = await getDailyWord(date);
+        if (!dailyWord) {
+          setIsLoading(false);
+          setError(true);
+        } else {
+          setWord(dailyWord.words);
+          setLetters(dailyWord.words.split(""));
+        }
       }
-      setLevelToDisplay(localLevel);
-      // console.log(levelWord);
-      setWord(levelWord.words);
-      setLetters(levelWord.words.split(""));
+      catch (error) {
+        console.error(error)
+      }
+    } else if (localLevel) {
+      try {
+        const levelWord = await getLevelWord(localLevel);
+        if (!levelWord) {
+          setIsLoading(false);
+          setError(true);
+        } else {
+          setLevelToDisplay(localLevel);
+          setWord(levelWord.words);
+          setLetters(levelWord.words.split(""));
+        }
+      } catch(error) {
+        console.error(error)
+
+      }
     }
     playSound("start", muteSounds);
     setIsLoading(false);
@@ -400,11 +420,17 @@ export default function MainGame({ navigation, route }) {
 
   useEffect(() => {
     const initializeGame = async () => {
-      if (level) {
-        getWord(level);
+      if(prevRoute.name === "Home"){
+        if (level) {
+          getWord(level);
+        } else {
+          const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
+          getWord(localStateLevel);
+        } 
       } else {
-        const localStateLevel = useSelector((state) => state.user.level); // Accessing the level from Redux store
-        getWord(localStateLevel);
+        if(date) {
+          getWord(date);
+        }
       }
     };
     initializeGame();
@@ -478,9 +504,19 @@ export default function MainGame({ navigation, route }) {
           )}
           <GeneralPopup
             visible={showNoMoreHints}
+            showCancel={true}
             onCancel={() => setShowNoMoreHints(false)}
             title="No more alphabets left!!"
             message="All alphabets have been guessed!"
+          />
+          <GeneralPopup
+            visible={error}
+            onCancel={() => {
+              navigation.goBack()
+              setError(false)
+            }}
+            title="Something Went Wrong!!"
+            message="Unexpected error has been founded Please try again!"
           />
           <HintsPopup
             visible={showHintsPopup}

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Button } from "react-native";
 import { COLORS } from "../../constants";
 
-const GeneralPopup = ({ visible, onCancel, title, message, onCancelListener , showStopLoading, onStopLoading}) => {
+const GeneralPopup = ({ visible, showCancel = true, onCancel, title, message , showStopLoading, onStopLoading}) => {
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.container}>
@@ -10,8 +10,8 @@ const GeneralPopup = ({ visible, onCancel, title, message, onCancelListener , sh
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.message}>{message}</Text>
           <View style={[styles.buttonContainer, {justifyContent: showStopLoading !== false ? "center" : "space-between"}]}>
-            {onCancel !== false && (
-              <TouchableOpacity style={styles.confirmButton} onPress={() => onCancelListener()}>
+            {showCancel !== false && (
+              <TouchableOpacity style={styles.confirmButton} onPress={() => onCancel()}>
                 <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             )}

@@ -174,7 +174,7 @@ const PurchasePopup = ({ isVisible, onClose }) => {
       {isLoading && (
         <GeneralPopup
           visible={isLoading}
-          onCancel={false}
+          showCancel={false}
           title="Loading"
           message="Please wait your ad will load soon!"
           showStopLoading
@@ -187,8 +187,8 @@ const PurchasePopup = ({ isVisible, onClose }) => {
       purchaseIssuePopup && (
         <GeneralPopup
           visible={purchaseIssuePopup}
-          onCancel={true}
-          onCancelListener={() => setPurchaseIssuePopup(false)}
+          showCancel={true}
+          onCancel={() => setPurchaseIssuePopup(false)}
           title="Failed"
           message="Purchase is not available! We will bring it soon!"
           />
