@@ -49,7 +49,6 @@ const useRewardAd = () => {
         (reward) => {
           setEarned(true);
           destroy();
-          // return true;
         }
       );
 
@@ -58,6 +57,12 @@ const useRewardAd = () => {
       setIsLoading(false);
       console.error(e);
       throw e;
+    }
+  };
+
+  const stopLoadingAd = () => {
+    if (rewarded.current) {
+      destroy();
     }
   };
 
@@ -76,6 +81,7 @@ const useRewardAd = () => {
     isLoaded,
     earned,
     play,
+    stopLoadingAd,
     openAdInspector,
   };
 };

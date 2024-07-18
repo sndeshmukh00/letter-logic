@@ -1,19 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Button } from "react-native";
+import { COLORS } from "../../constants";
 
-const GeneralPopup = ({ visible, onCancel, title, message, onCancelListener }) => {
+const GeneralPopup = ({ visible, onCancel, title, message, onCancelListener , showStopLoading, onStopLoading}) => {
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.container}>
         <View style={styles.popup}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.message}>{message}</Text>
-          <View style={styles.buttonContainer}>
+          <View style={[styles.buttonContainer, {justifyContent: showStopLoading !== false ? "center" : "space-between"}]}>
             {onCancel !== false && (
               <TouchableOpacity style={styles.confirmButton} onPress={() => onCancelListener()}>
                 <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             )}
+            {showStopLoading && <Button size="large" style={[{alignSelf: "center"}, styles.confirmButton]} color={'#ff6666'}  onPress={onStopLoading} title="Stop Loading" />}
           </View>
         </View>
       </View>

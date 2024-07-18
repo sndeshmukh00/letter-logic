@@ -18,7 +18,8 @@ const HintsPopup = ({
   const coins = useSelector((state) => state.user.coins);
   const hints = useSelector((state) => state.user.hints);
 
-  const { isLoading, earned, play } = useRewardAd();
+  const {  isLoading, earned, play, stopLoadingAd } = useRewardAd();
+  // const isLoading = true;
 
   const handleUseCoins = () => {
     if (coins >= 100) {
@@ -70,6 +71,10 @@ const HintsPopup = ({
               <ActivityLoader
                 title={"Please Wait"}
                 subtitle={"Your Ad is loading..."}
+                showStopLoading
+                onStopLoading={()=> {
+                  stopLoadingAd();
+                }}
               />
             )}
 

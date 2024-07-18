@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Button } from "react-native";
 import { PacmanIndicator } from "react-native-indicators";
 import { COLORS } from "../../constants";
 
-const ActivityLoader = ({ isLoading, title, subtitle = true }) => {
+const ActivityLoader = ({ isLoading, title, subtitle = true, showStopLoading = false, onStopLoading }) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -16,6 +16,14 @@ const ActivityLoader = ({ isLoading, title, subtitle = true }) => {
               : subtitle}
           </Text>
         )}
+
+        {showStopLoading && <>
+        <View style={{marginTop: 20}}>
+
+          <Button size="large" color={'#ff6666'} onPress={onStopLoading} title="Stop Loading" />
+        </View>
+          </>
+        }
       </View>
     </View>
   );

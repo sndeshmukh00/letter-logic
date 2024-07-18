@@ -20,7 +20,7 @@ import CoinCapsule from "../Capsule/CoinCapsule";
 import HintCapsule from "../Capsule/HintCapsule";
 
 const PurchasePopup = ({ isVisible, onClose }) => {
-  const { isLoading, isLoaded, earned, play } = useRewardAd();
+  const { isLoading, isLoaded, earned, play, stopLoadingAd } = useRewardAd();
   const dispatch = useDispatch();
   const coins = useSelector((state) => state.user.coins); // Accessing the coins from Redux store
   const hints = useSelector((state) => state.user.hints); // Accessing the hints from Redux store
@@ -177,6 +177,10 @@ const PurchasePopup = ({ isVisible, onClose }) => {
           onCancel={false}
           title="Loading"
           message="Please wait your ad will load soon!"
+          showStopLoading
+          onStopLoading={()=> {
+            stopLoadingAd();
+          }}
         />
       )}
       {
