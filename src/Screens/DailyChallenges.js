@@ -72,6 +72,11 @@ const DailyChallenges = ({ navigation }) => {
     return date.isBefore(cutoffDate, "day");
   };
 
+  const isDayNotCame = (date) => {
+    const cutoffDate = moment.utc(moment().format("YYYY-MM-DD"));
+    return date.isAfter(cutoffDate, "day");
+  }
+
   return (
     <>
       {/* Banner Ads */}
@@ -108,9 +113,10 @@ const DailyChallenges = ({ navigation }) => {
               styles.day,
               isDayWon(item) && styles.wonDay,
               isDayDisabled(item) && styles.disabledDay,
+              isDayNotCame(item) && styles.disabledDay,
             ]}
-            onPress={() => !isDayDisabled(item) && handleSelectDay(item)}
-            disabled={isDayDisabled(item)}
+            onPress={() => !isDayDisabled(item) && !isDayNotCame(item) && handleSelectDay(item)}
+            disabled={isDayDisabled(item) || isDayNotCame(item)}
           >
             <Text
               style={[
