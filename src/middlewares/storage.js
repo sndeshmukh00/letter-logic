@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { updateCoinsAPI, updateLevelAPI } from "../api/saveData";
+import { updateCoinsAPI, updateHintsAPI, updateLevelAPI } from "../api/saveData";
 
 const storageMiddleware = (store) => (next) => async (action) => {
   const result = next(action);
@@ -97,8 +97,7 @@ const storageMiddleware = (store) => (next) => async (action) => {
             await updateDailyChallengeAPI(state.user.dailyChallenge);
             break;
           case "UPDATE_HINTS":
-            // TODO: Add API call to update hints
-            // await updateHintsAPI(state.user.hints);
+            await updateHintsAPI(action.payload, state.user.email);
             break;
           default:
             break;

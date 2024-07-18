@@ -42,6 +42,7 @@ export const syncLocalDataToOnline = async (userData, token) => {
       email: userData.email,
       coins: userData.coins,
       level: userData.level,
+      hints: userData.hints,
       dailyChallenge: userData.dailyChallenge,
     });
     let config = {

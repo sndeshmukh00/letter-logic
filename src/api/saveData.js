@@ -85,3 +85,53 @@ export const updateCoinsAPI = async (coins, email) => {
     console.error(error);
   }
 };
+
+export const updateHintsAPI = async (hints, email) => {
+  console.log("here2")
+  const token = await AsyncStorage.getItem("@token");
+  let data = {
+    email: email,
+    hints: Math.abs(hints),
+  };
+
+  let config;
+
+  if (hints > 0) {
+    config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${API_URL}hints/add`,
+      headers: {
+        accept: "application/json",
+        Authorization: JSON.parse(token),
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+  } else if (hints < 0) {
+    config = {
+      method: "put",
+      maxBodyLength: Infinity,
+      url: `${API_URL}hints/use`,
+      headers: {
+        accept: "application/json",
+        Authorization: JSON.parse(token),
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+  }
+
+  try {
+    return await axios
+      .request(config)
+      .then((response) => {
+        // console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+};

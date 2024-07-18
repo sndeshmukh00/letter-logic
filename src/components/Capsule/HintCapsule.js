@@ -4,7 +4,7 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const HintCapsule = ({ hints, onAddHints }) => {
   const [hint, setHint] = useState(hints);
-  function hindConvertor(n, d) {
+  function hintConvertor(n, d) {
     if (!n) return setHint(0);
     else if (n < 1000) return setHint(n);
     (x = ("" + n).length), (p = Math.pow), (d = p(10, d));
@@ -12,7 +12,7 @@ const HintCapsule = ({ hints, onAddHints }) => {
     setHint(Math.round((n * d) / p(10, x)) / d + " kMGTPE"[x / 3]);
   }
   useEffect(() => {
-    hindConvertor(hints, 2);
+    hintConvertor(hints, 2);
   }, [hints]);
   return (
     <TouchableOpacity onPress={onAddHints} disabled={onAddHints === false}>

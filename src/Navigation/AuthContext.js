@@ -75,10 +75,12 @@ export const AuthProvider = ({ children }) => {
             // localUserData &&
             userDataResponse &&
             userDataResponse.user.coins === 500 &&
-            userDataResponse.user.level === 1
+            userDataResponse.user.level === 1 &&
+            userDataResponse.user.hints === 2
           ) {
             const updatedUserData = {
               coins: localUserData.coins,
+              hints: localUserData.hints,
               level: localUserData.level,
               dailyChallenge: localUserData.dailyChallenge,
               email: userData.email,
