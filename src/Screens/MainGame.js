@@ -52,7 +52,7 @@ const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : productionID;
 // Make sure to always use a test ID when not in production
 
 const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
-  keywords: ["food", "cooking", "fruit"], // Update based on the most relevant keywords for your app/users, these are just random examples
+  keywords: ["fashion", "clothing", "food", "cooking", "fruit","cloth", "money", "stock market", "earn", "game"], // Update based on the most relevant keywords for your app/users, these are just random examples
   requestNonPersonalizedAdsOnly: true, // Update based on the initial tracking settings from initialization earlier
 });
 

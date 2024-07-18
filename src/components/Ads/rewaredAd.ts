@@ -33,7 +33,7 @@ const useRewardAd = () => {
 
       rewarded.current = RewardedAd.createForAdRequest(adUnitId, {
         requestNonPersonalizedAdsOnly: true,
-        keywords: ["fashion", "clothing"],
+        keywords: ["fashion", "clothing", "food", "cooking", "fruit","cloth", "money", "stock market", "earn", "game"], // Update based on the most relevant keywords for your app/users, these are just random examples
       });
 
       unsubscribeLoaded.current = rewarded.current.addAdEventListener(
