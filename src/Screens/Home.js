@@ -8,7 +8,7 @@ import {
   Share,
 } from "react-native";
 import { FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 import { COLORS } from "../constants";
 import CoinCapsule from "../components/Capsule/CoinCapsule";
@@ -22,6 +22,9 @@ import ComingSoonPopup from "../components/Popups/ComingSoonPopup";
 import PurchasePopup from "../components/Popups/PurchasePopup";
 import HintCapsule from "../components/Capsule/HintCapsule";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : "ca-app-pub-9290496504908203/9300869702";
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -121,6 +124,19 @@ const Home = ({ navigation }) => {
 
   return (
     <>
+              {/* Banner Ads */}
+          <View style={styles.bannerAdContainer}>
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                networkExtras: {
+                  collapsible: 'bottom',
+                },
+              }}
+            />
+          </View>
+          {/* Banner Ads */}
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         {isPurchasePopupVisible && (
           <PurchasePopup
@@ -173,7 +189,9 @@ const Home = ({ navigation }) => {
           {!isLoggedIn ? (
             <View style={styles.loginMenu}>
               <TouchableOpacity
-                onPress={() => {navigation.navigate("AuthStack")}}
+                onPress={() => {
+                  navigation.navigate("AuthStack");
+                }}
                 style={styles.loginButton}
                 disabled={isLoggedIn}
               >
@@ -208,18 +226,18 @@ const Home = ({ navigation }) => {
           <View style={styles.container2}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => {navigation.navigate("DailyChallenges")}}
+              onPress={() => {
+                navigation.navigate("DailyChallenges");
+              }}
             >
               <Text style={styles.buttonText}>Daily Challenge</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() =>
-               {
-                navigation.navigate("GameScreen", { level: level })
-               }
-              }
+              onPress={() => {
+                navigation.navigate("GameScreen", { level: level });
+              }}
             >
               <Text style={styles.buttonText}>Continue Level {level}</Text>
             </TouchableOpacity>
@@ -285,6 +303,19 @@ const Home = ({ navigation }) => {
           </View>
         </View>
       </ImageBackground>
+                {/* Banner Ads */}
+          <View style={styles.bannerAdContainer}>
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                networkExtras: {
+                  collapsible: 'bottom',
+                },
+              }}
+            />
+          </View>
+          {/* Banner Ads */}
       <StatusBar style="light" />
     </>
   );
@@ -306,13 +337,15 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     top: "10%",
-    flex: 1,
-    width: "100%",
+    // flex: 1,
+    // width: "100%",
+    height: 100,
   },
   logo: {
     flex: 1,
     top: "-30%",
     width: "90%",
+    height: 60,
     alignSelf: "center",
     resizeMode: "contain",
   },
@@ -394,5 +427,13 @@ const styles = StyleSheet.create({
     height: 1,
     // backgroundColor: COLORS.lightgrey,
     marginVertical: 4,
+  },
+  bannerAdContainer: {
+    // marginBottom: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    // marginTop:70,
+    alignItems: 'center',
+    position: 'relative',
   },
 });

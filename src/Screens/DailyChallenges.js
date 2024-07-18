@@ -11,6 +11,9 @@ import moment from "moment";
 import { gettDailyChallengeCompleted } from "../hooks/usePersistGame";
 import { COLORS } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : "ca-app-pub-9290496504908203/9300869702";
 
 const DailyChallenges = ({ navigation }) => {
   const [currentDate, setCurrentDate] = useState(moment());
@@ -70,6 +73,20 @@ const DailyChallenges = ({ navigation }) => {
   };
 
   return (
+    <>
+      {/* Banner Ads */}
+      <View style={styles.bannerAdContainer}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            networkExtras: {
+              collapsible: 'bottom',
+            },
+          }}
+        />
+      </View>
+      {/* Banner Ads */}
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handlePrevMonth}>
@@ -108,6 +125,20 @@ const DailyChallenges = ({ navigation }) => {
         )}
       />
     </View>
+    {/* Banner Ads */}
+    <View style={styles.bannerAdContainer}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            networkExtras: {
+              collapsible: 'bottom',
+            },
+          }}
+        />
+      </View>
+      {/* Banner Ads */}
+    </>
   );
 };
 
