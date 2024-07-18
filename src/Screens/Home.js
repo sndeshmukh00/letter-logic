@@ -21,6 +21,7 @@ import { updateLevel } from "../store/actions/setUserData";
 import ComingSoonPopup from "../components/Popups/ComingSoonPopup";
 import PurchasePopup from "../components/Popups/PurchasePopup";
 import HintCapsule from "../components/Capsule/HintCapsule";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch(); // Initialize useDispatch hook
@@ -39,6 +40,15 @@ const Home = ({ navigation }) => {
   const [newGameVisible, setNewGameVisible] = useState(false);
   const [comingSoonVisible, setComingSoonVisible] = useState(false);
   const [isPurchasePopupVisible, setIsPurchasePopupVisible] = useState(false);
+
+  const handleShowHowToPlay = async () => {
+    const firstLoad = await AsyncStorage.getItem("howToPlayShown");
+    if (!firstLoad) {
+      setHowToPlayVisible(true);
+      AsyncStorage.setItem("howToPlayShown", "true");
+    }
+  }
+  handleShowHowToPlay()
 
   const handleAddCoins = () => {
     setIsPurchasePopupVisible(true);
