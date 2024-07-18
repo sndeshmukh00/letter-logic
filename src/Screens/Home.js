@@ -52,7 +52,6 @@ const Home = ({ navigation }) => {
 
   const handleAddCoins = () => {
     setIsPurchasePopupVisible(true);
-    // TODO: Add coins logic here via ads and purchase
   };
 
   const handleCloseSettingMenu = () => {
