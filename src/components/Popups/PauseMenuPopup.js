@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Modal } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TouchableOpacity, Modal, BackHandler } from "react-native";
 import {
   MaterialIcons,
   Ionicons,
@@ -11,13 +11,14 @@ import {
   setSoundStatus,
   setVibrationStatus,
 } from "../../store/actions/setUserData";
+import ConfirmationPopup from "./ConfirmationPopup";
 
 const PauseMenu = ({
   visible,
   onClose,
   onHome,
   onRestart,
-  onQuit,
+  // onQuit,
   onToggleMusic,
   onToggleSound,
   onToggleVibration,
@@ -30,6 +31,26 @@ const PauseMenu = ({
   const muteMusic = useSelector((state) => state.muteMusic);
   const muteSounds = useSelector((state) => state.muteSounds);
   const muteVibrations = useSelector((state) => state.muteVibrations);
+
+  const [isQuitConfirmationVisible, setIsQuitConfirmationVisible] = useState(false);
+
+  const onQuit = () => {
+    BackHandler.exitApp();
+  };
+
+  const quitHandler = () => {
+    setIsQuitConfirmationVisible(true);
+  };
+  const handleConfirmQuit = () => {
+    setIsQuitConfirmationVisible(false);
+    onClose();
+    onQuit();
+  };
+
+  const handleCancelQuit = () => {
+    setIsQuitConfirmationVisible(false);
+  };
+
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <View style={styles.overlay}>
@@ -47,9 +68,18 @@ const PauseMenu = ({
             <TouchableOpacity style={styles.button} onPress={onRestart}>
               <Text style={styles.buttonText}>Restart</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onQuit}>
-              <Text style={styles.buttonText}>Quit</Text>
-            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={quitHandler}>
+                  <Text style={styles.buttonText}>Quit</Text>
+                </TouchableOpacity>
+                {isQuitConfirmationVisible && (
+                  <ConfirmationPopup
+                    title="Confirm Quitting"
+                    message={`Are you sure you want to quit?`}
+                    visible={isQuitConfirmationVisible}
+                    onConfirm={handleConfirmQuit}
+                    onCancel={handleCancelQuit}
+                  />
+                )}
           </View>
           <View style={styles.iconsContainer}>
             {/* <TouchableOpacity
