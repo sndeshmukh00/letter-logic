@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import { gettDailyChallengeCompleted } from "../hooks/usePersistGame";
 import { COLORS } from "../constants";
+import { AntDesign } from "@expo/vector-icons";
 
 const DailyChallenges = ({ navigation }) => {
   const [currentDate, setCurrentDate] = useState(moment());
@@ -67,11 +68,12 @@ const DailyChallenges = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handlePrevMonth}>
-          <Text style={styles.navButton}>{"<"}</Text>
+          <AntDesign name="caretleft" size={32} color="black" />
+
         </TouchableOpacity>
         <Text style={styles.headerText}>{currentDate.format("MMMM YYYY")}</Text>
         <TouchableOpacity onPress={handleNextMonth}>
-          <Text style={styles.navButton}>{">"}</Text>
+          <AntDesign name="caretright" size={32} color="black" />
         </TouchableOpacity>
       </View>
       <FlatList
