@@ -21,6 +21,7 @@
     "expo-dev-client": "~4.0.20",
     "expo-haptics": "~13.0.1",
     "expo-linear-gradient": "~13.0.2",
+    "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-updates": "~0.25.20",
     "lottie-react-native": "6.7.0",
